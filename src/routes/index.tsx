@@ -1,8 +1,63 @@
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
-import { ComponentExample } from '@/components/component-example'
+import type { PokemonTypeName } from '@/types/pokemon'
+import { Header } from '@/components/layout/header'
+import { SearchBar } from '@/components/layout/search-bar'
+import { PokemonGrid } from '@/components/pokemon/pokemon-grid'
+import { FilterPanel } from '@/components/filters/filter-panel'
 
-export const Route = createFileRoute('/')({ component: App })
+interface HomeSearch {
+  search?: string
+  types?: string
+}
 
-function App() {
-  return <ComponentExample />
+export const Route = createFileRoute('/')({
+  validateSearch: (search: Record<string, unknown>): HomeSearch => ({
+    search: (search.search as string) || undefined,
+    types: (search.types as string) || undefined,
+  }),
+  component: HomePage,
+})
+
+function HomePage() {
+  const { search: urlSearch, types: urlTypes } = Route.useSearch()
+
+  const [search, setSearch] = useState(urlSearch || '')
+  const [filterTypes, setFilterTypes] = useState<Array<PokemonTypeName>>(
+    urlTypes ? (urlTypes.split(',') as Array<PokemonTypeName>) : [],
+  )
+  const [showFilters, setShowFilters] = useState(false)
+
+  return (
+    <div className="bg-background min-h-screen">
+      <Header />
+
+      <main className="container mx-auto px-4 py-6">
+        {/* Hero section */}
+        <div className="mb-8 flex flex-col items-center gap-4 text-center">
+          <img src="/pokemon-logo.svg" alt="Pokemon" className="h-16 w-auto" />
+          <p className="text-muted-foreground max-w-md">
+            Explore and discover all Pokemon from every generation. Search,
+            filter, and find your favorites.
+          </p>
+        </div>
+
+        {/* Search and filters */}
+        <div className="mb-6 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <SearchBar value={search} onChange={setSearch} />
+            <FilterPanel
+              open={showFilters}
+              onOpenChange={setShowFilters}
+              selectedTypes={filterTypes}
+              onTypesChange={setFilterTypes}
+            />
+          </div>
+        </div>
+
+        {/* Pokemon grid */}
+        <PokemonGrid search={search} filterTypes={filterTypes} />
+      </main>
+    </div>
+  )
 }
