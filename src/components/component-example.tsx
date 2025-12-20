@@ -30,6 +30,7 @@ import {
   TranslateIcon,
   UserIcon,
 } from '@phosphor-icons/react'
+import { toast } from 'sonner'
 import { Example, ExampleWrapper } from '@/components/example'
 import {
   AlertDialog,
@@ -90,13 +91,93 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export function ComponentExample() {
   return (
     <ExampleWrapper>
       <CardExample />
       <FormExample />
+      <SoonerExample />
+      <ThemeToggleExample />
     </ExampleWrapper>
+  )
+}
+
+function ThemeToggleExample() {
+  return (
+    <Example title="Theme Toggle">
+      <Card className="w-full max-w-md">
+        <CardContent>
+          <ThemeToggle />
+        </CardContent>
+      </Card>
+    </Example>
+  )
+}
+
+function SoonerExample() {
+  return (
+    <Example title="Sooner">
+      <Card className="w-full max-w-md">
+        <CardContent>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => toast('Event has been created')}
+            >
+              Default
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => toast.success('Event has been created')}
+            >
+              Success
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() =>
+                toast.info('Be at the area 10 minutes before the event time')
+              }
+            >
+              Info
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() =>
+                toast.warning('Event start time cannot be earlier than 8am')
+              }
+            >
+              Warning
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => toast.error('Event has not been created')}
+            >
+              Error
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                toast.promise<{ name: string }>(
+                  () =>
+                    new Promise((resolve) =>
+                      setTimeout(() => resolve({ name: 'Event' }), 2000),
+                    ),
+                  {
+                    loading: 'Loading...',
+                    success: (data) => `${data.name} has been created`,
+                    error: 'Error',
+                  },
+                )
+              }}
+            >
+              Promise
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </Example>
   )
 }
 
