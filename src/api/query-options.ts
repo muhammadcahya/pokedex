@@ -5,8 +5,11 @@ import {
   getAllTypes,
   getEvolutionChain,
   getGeneration,
+  getPokemonBasicInfoBatch,
   getPokemonBatch,
   getPokemonDetails,
+  getPokemonIdsByGeneration,
+  getPokemonIdsByType,
   getPokemonList,
   getPokemonPageWithDetails,
   getPokemonSpecies,
@@ -138,4 +141,34 @@ export const pokemonWithDetailsInfiniteOptions = (pageSize: number = 40) =>
     getNextPageParam: (lastPage) => lastPage.nextOffset,
     staleTime: CACHE_TIMES.pokemonList,
     gcTime: 1000 * 60 * 60, // Keep in cache for 1 hour
+  })
+
+// Get all Pokemon IDs for a specific type (cached for 24 hours)
+export const pokemonIdsByTypeOptions = (type: string) =>
+  queryOptions({
+    queryKey: ['pokemon-ids-by-type', type],
+    queryFn: () => getPokemonIdsByType({ data: { type } }),
+    staleTime: CACHE_TIMES.typeDetails,
+    gcTime: CACHE_TIMES.typeDetails,
+    enabled: !!type,
+  })
+
+// Get all Pokemon IDs for a specific generation (cached for 24 hours)
+export const pokemonIdsByGenerationOptions = (generation: number) =>
+  queryOptions({
+    queryKey: ['pokemon-ids-by-generation', generation],
+    queryFn: () => getPokemonIdsByGeneration({ data: { generation } }),
+    staleTime: CACHE_TIMES.typeDetails,
+    gcTime: CACHE_TIMES.typeDetails,
+    enabled: generation > 0,
+  })
+
+// Batch fetch Pokemon basic info by IDs (for paginated display)
+export const pokemonBasicInfoBatchOptions = (ids: Array<number>) =>
+  queryOptions({
+    queryKey: ['pokemon-basic-info-batch', ids],
+    queryFn: () => getPokemonBasicInfoBatch({ data: { ids } }),
+    staleTime: CACHE_TIMES.pokemonDetails,
+    gcTime: CACHE_TIMES.pokemonDetails,
+    enabled: ids.length > 0,
   })

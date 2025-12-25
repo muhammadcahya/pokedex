@@ -33,9 +33,14 @@ import { allAbilitiesOptions } from '@/api/query-options'
 interface FilterPanelProps {
   filters: FilterState
   onFiltersChange: (filters: FilterState) => void
+  onReset?: () => void
 }
 
-export function FilterPanel({ filters, onFiltersChange }: FilterPanelProps) {
+export function FilterPanel({
+  filters,
+  onFiltersChange,
+  onReset,
+}: FilterPanelProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
 
   // Fetch abilities for dropdown
@@ -64,7 +69,11 @@ export function FilterPanel({ filters, onFiltersChange }: FilterPanelProps) {
   }
 
   const handleClearFilters = () => {
-    onFiltersChange(DEFAULT_FILTERS)
+    if (onReset) {
+      onReset()
+    } else {
+      onFiltersChange(DEFAULT_FILTERS)
+    }
   }
 
   const hasFilters =

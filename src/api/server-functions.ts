@@ -213,3 +213,76 @@ export const getPokemonPageWithDetails = createServerFn({ method: 'GET' })
       total: 1025,
     }
   })
+
+// Helper to extract ID from PokeAPI URL
+function extractIdFromUrl(url: string): number {
+  const match = url.match(/\/(\d+)\/?$/)
+  return match ? parseInt(match[1], 10) : 0
+}
+
+// Get all Pokemon IDs for a specific type
+export const getPokemonIdsByType = createServerFn({ method: 'GET' })
+  .inputValidator((data: { type: string }) => data)
+  .handler(async ({ data }) => {
+    const response = await fetch(`${POKEAPI_BASE_URL}/type/${data.type}`)
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch type ${data.type}: ${response.status}`)
+    }
+
+    const typeData = (await response.json()) as TypeDetails
+    // Filter to only include Pokemon with id <= 1025 (main Pokemon, not forms)
+    return typeData.pokemon
+      .map((p) => extractIdFromUrl(p.pokemon.url))
+      .filter((id) => id > 0 && id <= 1025)
+      .sort((a, b) => a - b)
+  })
+
+// Get all Pokemon IDs for a specific generation
+export const getPokemonIdsByGeneration = createServerFn({ method: 'GET' })
+  .inputValidator((data: { generation: number }) => data)
+  .handler(async ({ data }) => {
+    const response = await fetch(
+      `${POKEAPI_BASE_URL}/generation/${data.generation}`,
+    )
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch generation ${data.generation}: ${response.status}`,
+      )
+    }
+
+    const genData = (await response.json()) as Generation
+    // pokemon_species contains the species in this generation
+    return genData.pokemon_species
+      .map((p) => extractIdFromUrl(p.url))
+      .filter((id) => id > 0 && id <= 1025)
+      .sort((a, b) => a - b)
+  })
+
+// Batch fetch Pokemon basic info by IDs (for paginated display)
+export const getPokemonBasicInfoBatch = createServerFn({ method: 'GET' })
+  .inputValidator((data: { ids: Array<number> }) => data)
+  .handler(async ({ data }) => {
+    const pokemonPromises = data.ids.map(async (id) => {
+      try {
+        const response = await fetch(`${POKEAPI_BASE_URL}/pokemon/${id}`)
+        if (!response.ok) return null
+        const pokemon = (await response.json()) as Pokemon
+        return {
+          id: pokemon.id,
+          name: pokemon.name,
+          types: pokemon.types.map((t) => t.type.name),
+          height: pokemon.height,
+          weight: pokemon.weight,
+          abilities: pokemon.abilities.map((a) => a.ability.name),
+          sprite: pokemon.sprites.front_default,
+        } as PokemonBasicInfo
+      } catch {
+        return null
+      }
+    })
+
+    const results = await Promise.all(pokemonPromises)
+    return results.filter((p): p is PokemonBasicInfo => p !== null)
+  })

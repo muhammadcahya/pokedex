@@ -1,31 +1,20 @@
-import { useState } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
-import type { FilterState, SearchParams } from '@/types/filters'
-import type { PokemonTypeName } from '@/types/pokemon'
+import { useMemo } from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { zodValidator } from '@tanstack/zod-adapter'
+import type { FilterState } from '@/types/filters'
+import {
+  DEFAULT_PAGE_SIZE,
+  PokemonFiltersSchema,
+  parseFiltersFromUrl,
+  serializeFiltersToUrl,
+} from '@/types/filters'
 import { Header } from '@/components/layout/header'
 import { SearchBar } from '@/components/layout/search-bar'
 import { PokemonGrid } from '@/components/pokemon/pokemon-grid'
 import { FilterPanel } from '@/components/filters/filter-panel'
 
 export const Route = createFileRoute('/')({
-  validateSearch: (search: Record<string, unknown>): SearchParams => ({
-    search: typeof search.search === 'string' ? search.search : undefined,
-    regions: typeof search.regions === 'string' ? search.regions : undefined,
-    types: typeof search.types === 'string' ? search.types : undefined,
-    ability: typeof search.ability === 'string' ? search.ability : undefined,
-    height:
-      typeof search.height === 'string'
-        ? (search.height as FilterState['height'])
-        : undefined,
-    weight:
-      typeof search.weight === 'string'
-        ? (search.weight as FilterState['weight'])
-        : undefined,
-    sort:
-      typeof search.sort === 'string'
-        ? (search.sort as FilterState['sort'])
-        : undefined,
-  }),
+  validateSearch: zodValidator(PokemonFiltersSchema),
   head: () => ({
     meta: [
       { title: 'Pokedex - Explore All Pokemon' },
@@ -41,22 +30,50 @@ export const Route = createFileRoute('/')({
 
 function HomePage() {
   const searchParams = Route.useSearch()
+  const navigate = useNavigate({ from: Route.fullPath })
 
-  // Initialize filters from URL params
-  const [filters, setFilters] = useState<FilterState>(() => ({
-    search: searchParams.search || '',
-    regions: searchParams.regions ? searchParams.regions.split(',') : [],
-    types: searchParams.types
-      ? (searchParams.types.split(',') as Array<PokemonTypeName>)
-      : [],
-    ability: searchParams.ability || '',
-    height: searchParams.height || 'all',
-    weight: searchParams.weight || 'all',
-    sort: searchParams.sort || 'number-asc',
-  }))
+  // Derive filter state from URL
+  const filters = useMemo(
+    () => parseFiltersFromUrl(searchParams),
+    [searchParams],
+  )
 
+  // Get page and limit from URL (with defaults)
+  const page = searchParams.page || 1
+  const limit = searchParams.limit || DEFAULT_PAGE_SIZE
+
+  // Update URL when filters change
+  const updateFilters = (newFilters: FilterState) => {
+    navigate({
+      search: serializeFiltersToUrl(newFilters, 1, limit), // Reset to page 1
+      replace: true,
+    })
+  }
+
+  // Update search specifically (with debounce handling in SearchBar)
   const handleSearchChange = (search: string) => {
-    setFilters((prev) => ({ ...prev, search }))
+    updateFilters({ ...filters, search })
+  }
+
+  // Reset all filters
+  const resetFilters = () => {
+    navigate({ search: {}, replace: true })
+  }
+
+  // Update page
+  const handlePageChange = (newPage: number) => {
+    navigate({
+      search: serializeFiltersToUrl(filters, newPage, limit),
+      replace: true,
+    })
+  }
+
+  // Update limit
+  const handleLimitChange = (newLimit: number) => {
+    navigate({
+      search: serializeFiltersToUrl(filters, 1, newLimit), // Reset to page 1
+      replace: true,
+    })
   }
 
   return (
@@ -82,11 +99,21 @@ function HomePage() {
               className="flex-1"
             />
           </div>
-          <FilterPanel filters={filters} onFiltersChange={setFilters} />
+          <FilterPanel
+            filters={filters}
+            onFiltersChange={updateFilters}
+            onReset={resetFilters}
+          />
         </div>
 
-        {/* Pokemon grid */}
-        <PokemonGrid filters={filters} />
+        {/* Pokemon grid with pagination */}
+        <PokemonGrid
+          filters={filters}
+          page={page}
+          limit={limit}
+          onPageChange={handlePageChange}
+          onLimitChange={handleLimitChange}
+        />
       </main>
     </div>
   )
