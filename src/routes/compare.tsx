@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   CaretLeftIcon,
-  EmptyIcon,
   ScalesIcon,
   TrashIcon,
   XIcon,
@@ -11,7 +10,6 @@ import { pokemonBatchOptions } from '@/api/query-options'
 import { Header } from '@/components/layout/header'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-
 import {
   Empty,
   EmptyDescription,
@@ -24,7 +22,7 @@ import { PokemonTypes } from '@/components/pokemon/pokemon-types'
 import { PokemonStats } from '@/components/pokemon/pokemon-stats'
 import { PokemonAbilities } from '@/components/pokemon/pokemon-abilities'
 import { PokemonWeaknesses } from '@/components/pokemon/pokemon-weaknesses'
-import { useCompare } from '@/hooks/use-compare'
+import { useCompare } from '@/contexts/compare-context'
 import {
   formatHeight,
   formatPokemonId,
@@ -35,6 +33,16 @@ import {
 import { MAX_COMPARE_POKEMON } from '@/lib/constants'
 
 export const Route = createFileRoute('/compare')({
+  head: () => ({
+    meta: [
+      { title: 'Compare Pokemon - Pokedex' },
+      {
+        name: 'description',
+        content:
+          'Compare up to 4 Pokemon side by side to see their stats, types, and abilities.',
+      },
+    ],
+  }),
   component: ComparePage,
 })
 
@@ -54,7 +62,12 @@ function ComparePage() {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" render={<Link to="/" />}>
+            <Button
+              variant="ghost"
+              size="sm"
+              render={<Link to="/" />}
+              nativeButton={false}
+            >
               <CaretLeftIcon />
               Back
             </Button>
@@ -87,7 +100,7 @@ function ComparePage() {
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <EmptyIcon />
+                <ScalesIcon />
               </EmptyMedia>
               <EmptyTitle>No Pokemon to compare</EmptyTitle>
               <EmptyDescription>

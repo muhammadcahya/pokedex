@@ -56,8 +56,13 @@ export function PokemonTypeBadge({
   return badge
 }
 
+// Accepts either string array or nested object array for backward compatibility
+type TypesInput =
+  | Array<string>
+  | Array<{ slot: number; type: { name: string } }>
+
 interface PokemonTypesProps {
-  types: Array<{ slot: number; type: { name: string } }>
+  types: TypesInput
   clickable?: boolean
   size?: 'sm' | 'md' | 'lg'
   className?: string
@@ -69,18 +74,24 @@ export function PokemonTypes({
   size = 'md',
   className,
 }: PokemonTypesProps) {
+  // Normalize types to string array
+  const normalizedTypes: Array<string> =
+    types.length > 0 && typeof types[0] === 'string'
+      ? (types as Array<string>)
+      : (types as Array<{ slot: number; type: { name: string } }>)
+          .sort((a, b) => a.slot - b.slot)
+          .map((t) => t.type.name)
+
   return (
     <div className={cn('flex flex-wrap gap-1.5', className)}>
-      {types
-        .sort((a, b) => a.slot - b.slot)
-        .map(({ type }) => (
-          <PokemonTypeBadge
-            key={type.name}
-            type={type.name as PokemonTypeName}
-            clickable={clickable}
-            size={size}
-          />
-        ))}
+      {normalizedTypes.map((typeName) => (
+        <PokemonTypeBadge
+          key={typeName}
+          type={typeName as PokemonTypeName}
+          clickable={clickable}
+          size={size}
+        />
+      ))}
     </div>
   )
 }

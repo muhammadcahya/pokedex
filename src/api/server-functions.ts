@@ -162,3 +162,54 @@ export const getPokemonBatch = createServerFn({ method: 'GET' })
     const results = await Promise.all(promises)
     return results.filter((p): p is Pokemon => p !== null)
   })
+
+// Basic Pokemon info for filtering (lightweight)
+export interface PokemonBasicInfo {
+  id: number
+  name: string
+  types: Array<string>
+  height: number
+  weight: number
+  abilities: Array<string>
+  sprite: string | null
+}
+
+// Paginated Pokemon with details - fetches a page of Pokemon with their basic info
+export const getPokemonPageWithDetails = createServerFn({ method: 'GET' })
+  .inputValidator((data: { limit: number; offset: number }) => data)
+  .handler(async ({ data }) => {
+    const { limit, offset } = data
+
+    // Fetch Pokemon details in parallel for this page
+    const ids = Array.from({ length: limit }, (_, i) => offset + i + 1).filter(
+      (id) => id <= 1025,
+    )
+
+    const pokemonPromises = ids.map(async (id) => {
+      try {
+        const response = await fetch(`${POKEAPI_BASE_URL}/pokemon/${id}`)
+        if (!response.ok) return null
+        const pokemon = (await response.json()) as Pokemon
+        return {
+          id: pokemon.id,
+          name: pokemon.name,
+          types: pokemon.types.map((t) => t.type.name),
+          height: pokemon.height,
+          weight: pokemon.weight,
+          abilities: pokemon.abilities.map((a) => a.ability.name),
+          sprite: pokemon.sprites.front_default,
+        } as PokemonBasicInfo
+      } catch {
+        return null
+      }
+    })
+
+    const results = await Promise.all(pokemonPromises)
+    const pokemon = results.filter((p): p is PokemonBasicInfo => p !== null)
+
+    return {
+      pokemon,
+      nextOffset: offset + limit <= 1025 ? offset + limit : null,
+      total: 1025,
+    }
+  })

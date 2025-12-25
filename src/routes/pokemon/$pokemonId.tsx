@@ -3,7 +3,6 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
-  CaretLeftIcon,
   CheckIcon,
   HeartIcon,
   PlusIcon,
@@ -30,32 +29,48 @@ import { PokemonWeaknesses } from '@/components/pokemon/pokemon-weaknesses'
 import { PokemonEvolution } from '@/components/pokemon/pokemon-evolution'
 import { PokemonCryPlayer } from '@/components/pokemon/pokemon-cry-player'
 import { PokemonSpritesGallery } from '@/components/pokemon/pokemon-sprites'
-import { useFavorites } from '@/hooks/use-favorites'
-import { useCompare } from '@/hooks/use-compare'
-import {
-  formatHeight,
-  formatPokemonId,
-  formatPokemonName,
-  formatWeight,
-} from '@/lib/pokemon-utils'
-import {
-  TOTAL_POKEMON,
-  formatGeneration,
-  getGenerationForPokemonId,
-} from '@/lib/generation-data'
+import { PokemonAbout } from '@/components/pokemon/pokemon-about'
+import { PokemonTraining } from '@/components/pokemon/pokemon-training'
+import { PokemonBreeding } from '@/components/pokemon/pokemon-breeding'
+import { PokemonHeldItems } from '@/components/pokemon/pokemon-held-items'
+import { useFavorites } from '@/contexts/favorites-context'
+import { useCompare } from '@/contexts/compare-context'
+import { formatPokemonId, formatPokemonName } from '@/lib/pokemon-utils'
+import { TOTAL_POKEMON, getGenerationForPokemonId } from '@/lib/generation-data'
 import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/pokemon/$pokemonId')({
   loader: async ({ context, params }) => {
     // Prefetch Pokemon data
-    await Promise.all([
-      context.queryClient.ensureQueryData(
-        pokemonDetailsOptions(params.pokemonId),
-      ),
-      context.queryClient.ensureQueryData(
-        pokemonSpeciesOptions(params.pokemonId),
-      ),
-    ])
+    const pokemon = await context.queryClient.ensureQueryData(
+      pokemonDetailsOptions(params.pokemonId),
+    )
+    await context.queryClient.ensureQueryData(
+      pokemonSpeciesOptions(params.pokemonId),
+    )
+    return { pokemon }
+  },
+  head: ({ loaderData }) => {
+    const pokemon = loaderData?.pokemon
+    if (!pokemon) {
+      return {
+        meta: [
+          { title: 'Pokemon - Pokedex' },
+          { name: 'description', content: 'Pokemon details' },
+        ],
+      }
+    }
+    const name = formatPokemonName(pokemon.name)
+    const id = formatPokemonId(pokemon.id)
+    return {
+      meta: [
+        { title: `${name} ${id} - Pokedex` },
+        {
+          name: 'description',
+          content: `View details, stats, evolutions, and abilities of ${name} (${id})`,
+        },
+      ],
+    }
   },
   component: PokemonDetailPage,
 })
@@ -92,45 +107,108 @@ function PokemonDetailPage() {
       <Header />
 
       <main className="container mx-auto px-4 py-6">
-        {/* Breadcrumb */}
-        <Breadcrumb className="mb-6">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink render={<Link to="/" />}>Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{formatPokemonName(pokemon.name)}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        {/* Navigation Header */}
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex-1">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink render={<Link to="/" />}>Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                {generation && (
+                  <>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink
+                        render={
+                          <Link
+                            to="/"
+                            search={{ regions: generation.region }}
+                          />
+                        }
+                      >
+                        {generation.region}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                  </>
+                )}
+                <BreadcrumbItem>
+                  <BreadcrumbPage>
+                    {formatPokemonName(pokemon.name)}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
 
-        {/* Back button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          render={<Link to="/" />}
-          className="mb-4"
-        >
-          <CaretLeftIcon />
-          Back to Pokedex
-        </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!prevId}
+              render={
+                prevId ? (
+                  <Link
+                    to="/pokemon/$pokemonId"
+                    params={{ pokemonId: String(prevId) }}
+                  />
+                ) : undefined
+              }
+              nativeButton={false}
+            >
+              <ArrowLeftIcon />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!nextId}
+              render={
+                nextId ? (
+                  <Link
+                    to="/pokemon/$pokemonId"
+                    params={{ pokemonId: String(nextId) }}
+                  />
+                ) : undefined
+              }
+              nativeButton={false}
+            >
+              Next
+              <ArrowRightIcon />
+            </Button>
+          </div>
+        </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          {/* Left column - Image */}
-          <div>
+          {/* Left column */}
+          <div className="space-y-6">
+            {/* Sprites */}
             <PokemonSpritesGallery
               sprites={pokemon.sprites}
               pokemonName={pokemon.name}
             />
 
             {/* Cry player */}
-            <div className="mt-4 flex justify-center">
+            <div className="flex justify-center">
               <PokemonCryPlayer
                 latestCry={pokemon.cries.latest}
                 legacyCry={pokemon.cries.legacy}
               />
             </div>
+
+            {/* Base Stats - Moved to Left */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">Base Stats</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PokemonStats stats={pokemon.stats} />
+              </CardContent>
+            </Card>
+
+            {/* Held Items - New */}
+            <PokemonHeldItems heldItems={pokemon.held_items} />
           </div>
 
           {/* Right column - Info */}
@@ -181,49 +259,21 @@ function PokemonDetailPage() {
               <PokemonTypes types={pokemon.types} clickable size="lg" />
             </div>
 
-            {/* About */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">About</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {flavorText && (
-                  <p className="text-muted-foreground text-sm">{flavorText}</p>
-                )}
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Height</span>
-                    <p className="font-medium">
-                      {formatHeight(pokemon.height)}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Weight</span>
-                    <p className="font-medium">
-                      {formatWeight(pokemon.weight)}
-                    </p>
-                  </div>
-                  {generation && (
-                    <div className="col-span-2">
-                      <span className="text-muted-foreground">Generation</span>
-                      <p className="font-medium">
-                        {formatGeneration(generation)}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            {/* About - Enhanced */}
+            <PokemonAbout
+              pokemon={pokemon}
+              generation={generation}
+              flavorText={flavorText}
+            />
 
-            {/* Base Stats */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">Base Stats</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <PokemonStats stats={pokemon.stats} />
-              </CardContent>
-            </Card>
+            {/* Training - New */}
+            <PokemonTraining
+              species={species}
+              baseExp={pokemon.base_experience}
+            />
+
+            {/* Breeding - New */}
+            <PokemonBreeding species={species} />
 
             {/* Weaknesses */}
             <Card>
@@ -273,6 +323,7 @@ function PokemonDetailPage() {
                   params={{ pokemonId: String(prevId) }}
                 />
               }
+              nativeButton={false}
             >
               <ArrowLeftIcon />
               Previous
@@ -290,6 +341,7 @@ function PokemonDetailPage() {
                   params={{ pokemonId: String(nextId) }}
                 />
               }
+              nativeButton={false}
             >
               Next
               <ArrowRightIcon />

@@ -4,17 +4,20 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useDebounce } from '@/hooks/use-debounce'
 import { DEBOUNCE_DELAYS } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 interface SearchBarProps {
   value: string
   onChange: (value: string) => void
   placeholder?: string
+  className?: string
 }
 
 export function SearchBar({
   value,
   onChange,
   placeholder = 'Search Pokemon by name or number...',
+  className,
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(value)
   const debouncedValue = useDebounce(inputValue, DEBOUNCE_DELAYS.search)
@@ -37,8 +40,8 @@ export function SearchBar({
   }
 
   return (
-    <div className="relative w-full max-w-md">
-      <MagnifyingGlassIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+    <div className={cn('relative w-full max-w-md', className)}>
+      <MagnifyingGlassIcon className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2" />
       <Input
         type="text"
         value={inputValue}

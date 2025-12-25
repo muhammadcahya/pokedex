@@ -14,10 +14,15 @@ import {
   getSpriteById,
 } from '@/lib/pokemon-utils'
 
+// Accepts either string array or nested object array
+type TypesInput =
+  | Array<string>
+  | Array<{ slot: number; type: { name: string } }>
+
 interface PokemonCardProps {
   id: number
   name: string
-  types: Array<{ slot: number; type: { name: string } }>
+  types: TypesInput
   isFavorite: boolean
   isInCompare: boolean
   onFavoriteToggle: () => void
@@ -51,10 +56,7 @@ export function PokemonCard({
               isFavorite && 'text-red-500',
             )}
           >
-            <HeartIcon
-              className="size-4"
-              weight={isFavorite ? 'fill' : 'regular'}
-            />
+            <HeartIcon weight={isFavorite ? 'fill' : 'regular'} />
           </TooltipTrigger>
           <TooltipContent>
             {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
@@ -74,11 +76,7 @@ export function PokemonCard({
               isInCompare && 'text-primary',
             )}
           >
-            {isInCompare ? (
-              <CheckIcon className="size-4" weight="bold" />
-            ) : (
-              <PlusIcon className="size-4" />
-            )}
+            {isInCompare ? <CheckIcon weight="bold" /> : <PlusIcon />}
           </TooltipTrigger>
           <TooltipContent>
             {isInCompare
@@ -93,7 +91,7 @@ export function PokemonCard({
       {/* Always show favorite indicator if favorited */}
       {isFavorite && (
         <div className="absolute top-2 left-2 z-10">
-          <HeartIcon className="size-4 text-red-500" weight="fill" />
+          <HeartIcon className="text-red-500" weight="fill" />
         </div>
       )}
 

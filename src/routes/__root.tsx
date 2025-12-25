@@ -14,6 +14,8 @@ import type { RouterContext } from '@/router'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { FavoritesProvider } from '@/contexts/favorites-context'
+import { CompareProvider } from '@/contexts/compare-context'
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
@@ -55,7 +57,11 @@ function RootComponent() {
   return (
     <RootDocument>
       <QueryClientProvider client={queryClient}>
-        <Outlet />
+        <FavoritesProvider>
+          <CompareProvider>
+            <Outlet />
+          </CompareProvider>
+        </FavoritesProvider>
       </QueryClientProvider>
     </RootDocument>
   )

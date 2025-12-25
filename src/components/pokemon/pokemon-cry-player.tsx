@@ -54,12 +54,12 @@ export function PokemonCryPlayer({
       >
         {isPlaying ? (
           <>
-            <PauseIcon className="size-4" weight="fill" />
+            <PauseIcon weight="fill" />
             <span>Stop</span>
           </>
         ) : (
           <>
-            <SpeakerHighIcon className="size-4" />
+            <SpeakerHighIcon />
             <span>Play Cry</span>
           </>
         )}

@@ -1,32 +1,63 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import type { FilterState, SearchParams } from '@/types/filters'
 import type { PokemonTypeName } from '@/types/pokemon'
 import { Header } from '@/components/layout/header'
 import { SearchBar } from '@/components/layout/search-bar'
 import { PokemonGrid } from '@/components/pokemon/pokemon-grid'
 import { FilterPanel } from '@/components/filters/filter-panel'
 
-interface HomeSearch {
-  search?: string
-  types?: string
-}
-
 export const Route = createFileRoute('/')({
-  validateSearch: (search: Record<string, unknown>): HomeSearch => ({
-    search: (search.search as string) || undefined,
-    types: (search.types as string) || undefined,
+  validateSearch: (search: Record<string, unknown>): SearchParams => ({
+    search: typeof search.search === 'string' ? search.search : undefined,
+    regions: typeof search.regions === 'string' ? search.regions : undefined,
+    types: typeof search.types === 'string' ? search.types : undefined,
+    ability: typeof search.ability === 'string' ? search.ability : undefined,
+    height:
+      typeof search.height === 'string'
+        ? (search.height as FilterState['height'])
+        : undefined,
+    weight:
+      typeof search.weight === 'string'
+        ? (search.weight as FilterState['weight'])
+        : undefined,
+    sort:
+      typeof search.sort === 'string'
+        ? (search.sort as FilterState['sort'])
+        : undefined,
+  }),
+  head: () => ({
+    meta: [
+      { title: 'Pokedex - Explore All Pokemon' },
+      {
+        name: 'description',
+        content:
+          'Explore and discover all 1025 Pokemon from every generation. Search, filter, compare, and find your favorites.',
+      },
+    ],
   }),
   component: HomePage,
 })
 
 function HomePage() {
-  const { search: urlSearch, types: urlTypes } = Route.useSearch()
+  const searchParams = Route.useSearch()
 
-  const [search, setSearch] = useState(urlSearch || '')
-  const [filterTypes, setFilterTypes] = useState<Array<PokemonTypeName>>(
-    urlTypes ? (urlTypes.split(',') as Array<PokemonTypeName>) : [],
-  )
-  const [showFilters, setShowFilters] = useState(false)
+  // Initialize filters from URL params
+  const [filters, setFilters] = useState<FilterState>(() => ({
+    search: searchParams.search || '',
+    regions: searchParams.regions ? searchParams.regions.split(',') : [],
+    types: searchParams.types
+      ? (searchParams.types.split(',') as Array<PokemonTypeName>)
+      : [],
+    ability: searchParams.ability || '',
+    height: searchParams.height || 'all',
+    weight: searchParams.weight || 'all',
+    sort: searchParams.sort || 'number-asc',
+  }))
+
+  const handleSearchChange = (search: string) => {
+    setFilters((prev) => ({ ...prev, search }))
+  }
 
   return (
     <div className="bg-background min-h-screen">
@@ -43,20 +74,19 @@ function HomePage() {
         </div>
 
         {/* Search and filters */}
-        <div className="mb-6 flex flex-col gap-4">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <SearchBar value={search} onChange={setSearch} />
-            <FilterPanel
-              open={showFilters}
-              onOpenChange={setShowFilters}
-              selectedTypes={filterTypes}
-              onTypesChange={setFilterTypes}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <SearchBar
+              value={filters.search}
+              onChange={handleSearchChange}
+              className="flex-1"
             />
           </div>
+          <FilterPanel filters={filters} onFiltersChange={setFilters} />
         </div>
 
         {/* Pokemon grid */}
-        <PokemonGrid search={search} filterTypes={filterTypes} />
+        <PokemonGrid filters={filters} />
       </main>
     </div>
   )

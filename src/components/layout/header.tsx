@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { HeartIcon, ScalesIcon, ShuffleIcon } from '@phosphor-icons/react'
+import {
+  HeartIcon,
+  MagnifyingGlassIcon,
+  ScalesIcon,
+  ShuffleIcon,
+} from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { useFavorites } from '@/hooks/use-favorites'
-import { useCompare } from '@/hooks/use-compare'
+import { useFavorites } from '@/contexts/favorites-context'
+import { useCompare } from '@/contexts/compare-context'
 import { getRandomPokemonId } from '@/lib/pokemon-utils'
 
 export function Header() {
@@ -37,7 +42,7 @@ export function Header() {
             onClick={handleSurpriseMe}
             className="gap-1.5"
           >
-            <ShuffleIcon className="size-4" />
+            <ShuffleIcon />
             <span className="hidden sm:inline">Surprise Me</span>
           </Button>
 
@@ -45,9 +50,21 @@ export function Header() {
             variant="ghost"
             size="sm"
             className="gap-1.5"
-            render={<Link to="/favorites" />}
+            render={<Link to="/search" />}
+            nativeButton={false}
           >
-            <HeartIcon className="size-4" weight="fill" />
+            <MagnifyingGlassIcon weight="fill" />
+            <span className="hidden sm:inline">Search</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            render={<Link to="/favorites" />}
+            nativeButton={false}
+          >
+            <HeartIcon weight="fill" />
             <span className="hidden sm:inline">Favorites</span>
             {isClient && favoritesCount > 0 && (
               <span className="bg-primary text-primary-foreground ml-1 rounded-full px-1.5 py-0.5 text-xs">
@@ -61,8 +78,9 @@ export function Header() {
             size="sm"
             className="gap-1.5"
             render={<Link to="/compare" />}
+            nativeButton={false}
           >
-            <ScalesIcon className="size-4" />
+            <ScalesIcon />
             <span className="hidden sm:inline">Compare</span>
             {isClient && compareCount > 0 && (
               <span className="bg-primary text-primary-foreground ml-1 rounded-full px-1.5 py-0.5 text-xs">

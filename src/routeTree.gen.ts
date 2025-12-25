@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PokemonPokemonIdRouteImport } from './routes/pokemon/$pokemonId'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FavoritesRoute = FavoritesRouteImport.update({
   id: '/favorites',
   path: '/favorites',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/favorites': typeof FavoritesRoute
+  '/search': typeof SearchRoute
   '/pokemon/$pokemonId': typeof PokemonPokemonIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/favorites': typeof FavoritesRoute
+  '/search': typeof SearchRoute
   '/pokemon/$pokemonId': typeof PokemonPokemonIdRoute
 }
 export interface FileRoutesById {
@@ -52,25 +60,40 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/compare': typeof CompareRoute
   '/favorites': typeof FavoritesRoute
+  '/search': typeof SearchRoute
   '/pokemon/$pokemonId': typeof PokemonPokemonIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/compare' | '/favorites' | '/pokemon/$pokemonId'
+  fullPaths: '/' | '/compare' | '/favorites' | '/search' | '/pokemon/$pokemonId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/compare' | '/favorites' | '/pokemon/$pokemonId'
-  id: '__root__' | '/' | '/compare' | '/favorites' | '/pokemon/$pokemonId'
+  to: '/' | '/compare' | '/favorites' | '/search' | '/pokemon/$pokemonId'
+  id:
+    | '__root__'
+    | '/'
+    | '/compare'
+    | '/favorites'
+    | '/search'
+    | '/pokemon/$pokemonId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CompareRoute: typeof CompareRoute
   FavoritesRoute: typeof FavoritesRoute
+  SearchRoute: typeof SearchRoute
   PokemonPokemonIdRoute: typeof PokemonPokemonIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/favorites': {
       id: '/favorites'
       path: '/favorites'
@@ -106,6 +129,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CompareRoute: CompareRoute,
   FavoritesRoute: FavoritesRoute,
+  SearchRoute: SearchRoute,
   PokemonPokemonIdRoute: PokemonPokemonIdRoute,
 }
 export const routeTree = rootRouteImport

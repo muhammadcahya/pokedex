@@ -1,160 +1,189 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useInfiniteQuery, useQueries } from '@tanstack/react-query'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { PokemonCard, PokemonCardSkeleton } from './pokemon-card'
-import {
-  pokemonDetailsOptions,
-  pokemonListInfiniteOptions,
-} from '@/api/query-options'
+import type { FilterState } from '@/types/filters'
+import type { PokemonBasicInfo } from '@/api/server-functions'
+import { pokemonWithDetailsInfiniteOptions } from '@/api/query-options'
 import { Empty, EmptyDescription, EmptyTitle } from '@/components/ui/empty'
 import { Spinner } from '@/components/ui/spinner'
 import { Button } from '@/components/ui/button'
-import { useFavorites } from '@/hooks/use-favorites'
-import { useCompare } from '@/hooks/use-compare'
-import { extractIdFromUrl } from '@/lib/pokemon-utils'
-import { TOTAL_POKEMON } from '@/lib/generation-data'
+import { useFavorites } from '@/contexts/favorites-context'
+import { useCompare } from '@/contexts/compare-context'
+import { TOTAL_POKEMON, isInGeneration } from '@/lib/generation-data'
+import { HEIGHT_RANGES, WEIGHT_RANGES } from '@/types/filters'
 
 interface PokemonGridProps {
-  search?: string
-  filterTypes?: Array<string>
+  filters: FilterState
 }
 
-export function PokemonGrid({
-  search = '',
-  filterTypes = [],
-}: PokemonGridProps) {
+const PAGE_SIZE = 40
+
+export function PokemonGrid({ filters }: PokemonGridProps) {
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)
-
-  // Track the previous filter state to detect filter changes
-  const prevFilterTypesRef = useRef<Array<string>>([])
-  const [filterStable, setFilterStable] = useState(true)
 
   const { toggleFavorite, isFavorite } = useFavorites()
   const { toggleCompare, isInCompare, canAddMore } = useCompare()
 
-  // Infinite query for Pokemon list
+  // Use infinite query for real paginated fetching from API
   const {
     data,
+    isLoading,
+    isError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isLoading,
-    isError,
-  } = useInfiniteQuery(pokemonListInfiniteOptions())
+  } = useInfiniteQuery(pokemonWithDetailsInfiniteOptions(PAGE_SIZE))
 
-  // Get all Pokemon from all pages
-  const allPokemon = data?.pages.flatMap((page) => page.results) ?? []
+  // Flatten all pages into a single array
+  const allLoadedPokemon = useMemo(() => {
+    if (!data?.pages) return []
+    return data.pages.flatMap((page) => page.pokemon)
+  }, [data])
 
-  // Fetch details for all Pokemon in current pages (for types)
-  const pokemonDetailsQueries = useQueries({
-    queries: allPokemon.map((pokemon) => {
-      const id = extractIdFromUrl(pokemon.url)
-      return {
-        ...pokemonDetailsOptions(id),
-        enabled: !!id,
-      }
-    }),
-  })
+  // Check if any filters are active
+  const hasActiveFilters = useMemo(() => {
+    return (
+      filters.search !== '' ||
+      filters.regions.length > 0 ||
+      filters.types.length > 0 ||
+      filters.ability !== '' ||
+      filters.height !== 'all' ||
+      filters.weight !== 'all'
+    )
+  }, [filters])
 
-  // Track if details are loading for current batch
-  const loadedDetailsCount = pokemonDetailsQueries.filter(
-    (q) => !q.isLoading && q.data,
-  ).length
-  const totalQueriesCount = pokemonDetailsQueries.length
-  const allDetailsLoaded =
-    totalQueriesCount > 0 && loadedDetailsCount === totalQueriesCount
+  // Filter and sort Pokemon (on loaded data)
+  const filteredPokemon = useMemo(() => {
+    let result = [...allLoadedPokemon]
 
-  // Detect filter changes and mark as unstable until details are loaded
-  useEffect(() => {
-    const prevTypes = prevFilterTypesRef.current
-    const currentTypes = filterTypes
-
-    const filtersChanged =
-      prevTypes.length !== currentTypes.length ||
-      prevTypes.some((t, i) => t !== currentTypes[i])
-
-    if (filtersChanged) {
-      setFilterStable(false)
-      prevFilterTypesRef.current = [...currentTypes]
+    // Search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase()
+      result = result.filter((pokemon) => {
+        const matchesName = pokemon.name.toLowerCase().includes(searchLower)
+        const matchesId = String(pokemon.id)
+          .padStart(4, '0')
+          .includes(filters.search)
+        return matchesName || matchesId
+      })
     }
-  }, [filterTypes])
 
-  // Mark filter as stable once all details are loaded
-  useEffect(() => {
-    if (allDetailsLoaded && !filterStable) {
-      setFilterStable(true)
+    // Region filter
+    if (filters.regions.length > 0) {
+      result = result.filter((pokemon) =>
+        isInGeneration(pokemon.id, filters.regions),
+      )
     }
-  }, [allDetailsLoaded, filterStable])
 
-  // Build Pokemon list with details - memoized to prevent recalculations
-  const pokemonWithDetails = useMemo(() => {
-    return allPokemon
-      .map((pokemon, index) => {
-        const id = extractIdFromUrl(pokemon.url)
-        const details = pokemonDetailsQueries[index]?.data
-        return {
-          id,
-          name: pokemon.name,
-          types: details?.types ?? [],
-          isLoading: pokemonDetailsQueries[index]?.isLoading ?? true,
+    // Type filter
+    if (filters.types.length > 0) {
+      result = result.filter((pokemon) =>
+        filters.types.every((type) => pokemon.types.includes(type)),
+      )
+    }
+
+    // Ability filter
+    if (filters.ability) {
+      result = result.filter((pokemon) =>
+        pokemon.abilities.includes(filters.ability),
+      )
+    }
+
+    // Height filter
+    if (filters.height !== 'all') {
+      result = result.filter((pokemon) => {
+        const height = pokemon.height
+        switch (filters.height) {
+          case 'small':
+            return height < HEIGHT_RANGES.small.max
+          case 'medium':
+            return (
+              height >= HEIGHT_RANGES.medium.min &&
+              height < HEIGHT_RANGES.medium.max
+            )
+          case 'large':
+            return height >= HEIGHT_RANGES.large.min
+          default:
+            return true
         }
       })
-      .filter((pokemon) => {
-        // Apply search filter
-        if (search) {
-          const searchLower = search.toLowerCase()
-          const matchesName = pokemon.name.toLowerCase().includes(searchLower)
-          const matchesId = String(pokemon.id).includes(search)
-          if (!matchesName && !matchesId) return false
-        }
+    }
 
-        // Apply type filter - only filter Pokemon with loaded types
-        if (filterTypes.length > 0) {
-          // Skip Pokemon without loaded types
-          if (pokemon.types.length === 0) {
-            return false
-          }
-          const pokemonTypes = pokemon.types.map((t) => t.type.name)
-          const hasAllTypes = filterTypes.every((type) =>
-            pokemonTypes.includes(type),
-          )
-          if (!hasAllTypes) return false
+    // Weight filter
+    if (filters.weight !== 'all') {
+      result = result.filter((pokemon) => {
+        const weight = pokemon.weight
+        switch (filters.weight) {
+          case 'light':
+            return weight < WEIGHT_RANGES.light.max
+          case 'medium':
+            return (
+              weight >= WEIGHT_RANGES.medium.min &&
+              weight < WEIGHT_RANGES.medium.max
+            )
+          case 'heavy':
+            return weight >= WEIGHT_RANGES.heavy.min
+          default:
+            return true
         }
-
-        return true
       })
-  }, [allPokemon, pokemonDetailsQueries, search, filterTypes])
+    }
 
-  // Calculate showing count
-  const showingCount = pokemonWithDetails.length
-  const totalCount = TOTAL_POKEMON
+    // Sort
+    switch (filters.sort) {
+      case 'number-asc':
+        result.sort((a, b) => a.id - b.id)
+        break
+      case 'number-desc':
+        result.sort((a, b) => b.id - a.id)
+        break
+      case 'name-asc':
+        result.sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'name-desc':
+        result.sort((a, b) => b.name.localeCompare(a.name))
+        break
+      case 'height-asc':
+        result.sort((a, b) => a.height - b.height)
+        break
+      case 'height-desc':
+        result.sort((a, b) => b.height - a.height)
+        break
+      case 'weight-asc':
+        result.sort((a, b) => a.weight - b.weight)
+        break
+      case 'weight-desc':
+        result.sort((a, b) => b.weight - a.weight)
+        break
+      case 'random':
+        result.sort(() => Math.random() - 0.5)
+        break
+    }
 
-  // Check if we're actively filtering (type filter is active)
-  const hasTypeFilter = filterTypes.length > 0
-  // Only show loading state when filter just changed and details not loaded yet
-  const isFilterLoading = hasTypeFilter && !filterStable
+    return result
+  }, [allLoadedPokemon, filters])
 
-  // Intersection observer for infinite scroll - DISABLED when type filter is active
+  // Intersection observer for infinite scroll (only when not filtering)
   const handleObserver = useCallback(
     (entries: Array<IntersectionObserverEntry>) => {
       const [entry] = entries
-      // Only auto-fetch if NO type filter is active
       if (
         entry.isIntersecting &&
         hasNextPage &&
         !isFetchingNextPage &&
-        !hasTypeFilter
+        !hasActiveFilters
       ) {
         fetchNextPage()
       }
     },
-    [fetchNextPage, hasNextPage, isFetchingNextPage, hasTypeFilter],
+    [hasNextPage, isFetchingNextPage, fetchNextPage, hasActiveFilters],
   )
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver(handleObserver, {
       root: null,
-      rootMargin: '100px',
+      rootMargin: '200px',
       threshold: 0,
     })
 
@@ -167,10 +196,16 @@ export function PokemonGrid({
     }
   }, [handleObserver])
 
+  // Loading state (initial load only)
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <div className="text-muted-foreground text-sm">Loading Pokemon...</div>
+      <div className="space-y-6">
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Spinner className="size-5" />
+            <span className="text-muted-foreground">Loading Pokemon...</span>
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {Array.from({ length: 20 }).map((_, i) => (
             <PokemonCardSkeleton key={i} />
@@ -180,6 +215,7 @@ export function PokemonGrid({
     )
   }
 
+  // Error state
   if (isError) {
     return (
       <Empty>
@@ -191,88 +227,94 @@ export function PokemonGrid({
     )
   }
 
-  // Show loading state when filter just changed
-  if (isFilterLoading) {
+  // Empty results
+  if (filteredPokemon.length === 0) {
     return (
       <div className="space-y-4">
-        <div className="text-muted-foreground flex items-center gap-2 text-sm">
-          <Spinner className="size-4" />
-          <span>Filtering by type...</span>
-        </div>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <PokemonCardSkeleton key={i} />
-          ))}
-        </div>
+        <Empty>
+          <EmptyTitle>No Pokemon found</EmptyTitle>
+          <EmptyDescription>
+            {hasActiveFilters && hasNextPage
+              ? 'No matches in loaded Pokemon. Try loading more or adjusting your filters.'
+              : "Try adjusting your search or filters to find what you're looking for."}
+          </EmptyDescription>
+        </Empty>
+        {hasActiveFilters && hasNextPage && (
+          <div className="flex justify-center">
+            <Button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Loading more...
+                </>
+              ) : (
+                'Load More Pokemon'
+              )}
+            </Button>
+          </div>
+        )}
       </div>
-    )
-  }
-
-  if (pokemonWithDetails.length === 0) {
-    return (
-      <Empty>
-        <EmptyTitle>No Pokemon found</EmptyTitle>
-        <EmptyDescription>
-          {search || hasTypeFilter
-            ? 'Try adjusting your search or filters'
-            : 'No Pokemon available'}
-        </EmptyDescription>
-      </Empty>
     )
   }
 
   return (
     <div className="space-y-4">
-      <div className="text-muted-foreground text-sm">
-        Showing {showingCount} of {totalCount} Pokemon
-        {hasTypeFilter && ' (filtered)'}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {pokemonWithDetails.map((pokemon) =>
-          pokemon.isLoading ? (
-            <PokemonCardSkeleton key={pokemon.id} />
-          ) : (
-            <PokemonCard
-              key={pokemon.id}
-              id={pokemon.id}
-              name={pokemon.name}
-              types={pokemon.types}
-              isFavorite={isFavorite(pokemon.id)}
-              isInCompare={isInCompare(pokemon.id)}
-              onFavoriteToggle={() => toggleFavorite(pokemon.id, pokemon.name)}
-              onCompareToggle={() => toggleCompare(pokemon.id, pokemon.name)}
-              canAddToCompare={canAddMore}
-            />
-          ),
+      <div className="text-muted-foreground flex items-center justify-between text-sm">
+        <span>
+          Showing {filteredPokemon.length}
+          {hasActiveFilters && ` of ${allLoadedPokemon.length} loaded`}
+          {!hasNextPage && ` of ${TOTAL_POKEMON} total`}
+        </span>
+        {hasActiveFilters && hasNextPage && (
+          <span className="text-amber-600 dark:text-amber-400">
+            Filtering {allLoadedPokemon.length} loaded Pokemon
+          </span>
         )}
       </div>
 
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        {filteredPokemon.map((pokemon: PokemonBasicInfo) => (
+          <PokemonCard
+            key={pokemon.id}
+            id={pokemon.id}
+            name={pokemon.name}
+            types={pokemon.types}
+            isFavorite={isFavorite(pokemon.id)}
+            isInCompare={isInCompare(pokemon.id)}
+            onFavoriteToggle={() => toggleFavorite(pokemon.id, pokemon.name)}
+            onCompareToggle={() => toggleCompare(pokemon.id, pokemon.name)}
+            canAddToCompare={canAddMore}
+          />
+        ))}
+      </div>
+
       {/* Load more trigger */}
-      <div ref={loadMoreRef} className="flex justify-center py-4">
+      <div ref={loadMoreRef} className="flex flex-col items-center gap-4 py-4">
         {isFetchingNextPage && (
           <div className="flex items-center gap-2">
             <Spinner className="size-5" />
             <span className="text-muted-foreground text-sm">
-              Loading more...
+              Fetching more Pokemon...
             </span>
           </div>
         )}
 
-        {/* Manual load more button when type filter is active */}
-        {hasTypeFilter && hasNextPage && !isFetchingNextPage && (
+        {hasNextPage && !isFetchingNextPage && (
           <Button
             variant="outline"
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
           >
-            Load more Pokemon
+            Load More Pokemon ({allLoadedPokemon.length} / {TOTAL_POKEMON})
           </Button>
         )}
 
-        {!hasNextPage && allPokemon.length > 0 && (
+        {!hasNextPage && allLoadedPokemon.length > 0 && (
           <span className="text-muted-foreground text-sm">
-            You&apos;ve seen all {totalCount} Pokemon!
+            All {TOTAL_POKEMON} Pokemon loaded!
           </span>
         )}
       </div>

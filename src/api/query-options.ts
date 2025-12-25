@@ -8,6 +8,7 @@ import {
   getPokemonBatch,
   getPokemonDetails,
   getPokemonList,
+  getPokemonPageWithDetails,
   getPokemonSpecies,
   getTypeDetails,
 } from './server-functions'
@@ -123,4 +124,18 @@ export const pokemonBatchOptions = (ids: Array<number>) =>
     queryFn: () => getPokemonBatch({ data: { ids } }),
     staleTime: CACHE_TIMES.pokemonDetails,
     enabled: ids.length > 0,
+  })
+
+// Infinite query for Pokemon with details (for filtering and grid display)
+export const pokemonWithDetailsInfiniteOptions = (pageSize: number = 40) =>
+  infiniteQueryOptions({
+    queryKey: ['pokemon-with-details-infinite', pageSize],
+    queryFn: ({ pageParam = 0 }) =>
+      getPokemonPageWithDetails({
+        data: { limit: pageSize, offset: pageParam },
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextOffset,
+    staleTime: CACHE_TIMES.pokemonList,
+    gcTime: 1000 * 60 * 60, // Keep in cache for 1 hour
   })

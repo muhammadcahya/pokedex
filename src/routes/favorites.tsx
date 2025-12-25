@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, createFileRoute } from '@tanstack/react-router'
-import { CaretLeft, Heart, Trash } from '@phosphor-icons/react'
+import { CaretLeftIcon, HeartIcon, TrashIcon } from '@phosphor-icons/react'
 import { pokemonBatchOptions } from '@/api/query-options'
 import { Header } from '@/components/layout/header'
 import { Button } from '@/components/ui/button'
@@ -15,10 +15,19 @@ import {
   PokemonCard,
   PokemonCardSkeleton,
 } from '@/components/pokemon/pokemon-card'
-import { useFavorites } from '@/hooks/use-favorites'
-import { useCompare } from '@/hooks/use-compare'
+import { useFavorites } from '@/contexts/favorites-context'
+import { useCompare } from '@/contexts/compare-context'
 
 export const Route = createFileRoute('/favorites')({
+  head: () => ({
+    meta: [
+      { title: 'Favorites - Pokedex' },
+      {
+        name: 'description',
+        content: 'View your favorite Pokemon saved from the Pokedex.',
+      },
+    ],
+  }),
   component: FavoritesPage,
 })
 
@@ -40,13 +49,18 @@ function FavoritesPage() {
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" render={<Link to="/" />}>
-              <CaretLeft className="size-4" />
+            <Button
+              variant="ghost"
+              size="sm"
+              render={<Link to="/" />}
+              nativeButton={false}
+            >
+              <CaretLeftIcon />
               Back
             </Button>
 
             <div className="flex items-center gap-2">
-              <Heart className="size-6 text-red-500" weight="fill" />
+              <HeartIcon className="size-6 text-red-500" weight="fill" />
               <h1 className="text-2xl font-bold">Your Favorites</h1>
             </div>
           </div>
@@ -58,7 +72,7 @@ function FavoritesPage() {
               onClick={clearFavorites}
               className="text-destructive gap-1.5"
             >
-              <Trash className="size-4" />
+              <TrashIcon />
               Clear All
             </Button>
           )}
@@ -73,7 +87,7 @@ function FavoritesPage() {
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <Heart className="size-4" />
+                <HeartIcon />
               </EmptyMedia>
               <EmptyTitle>No favorites yet</EmptyTitle>
               <EmptyDescription>

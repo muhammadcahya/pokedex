@@ -8,117 +8,135 @@ interface PokemonSpritesGalleryProps {
   className?: string
 }
 
-type SpriteVariant = 'default' | 'shiny'
+interface SpriteOption {
+  src: string | null
+  alt: string
+  label: string
+}
 
 export function PokemonSpritesGallery({
   sprites,
   pokemonName,
   className,
 }: PokemonSpritesGalleryProps) {
-  const [variant, setVariant] = useState<SpriteVariant>('default')
+  // Collect all available sprites
+  const allSprites: Array<SpriteOption> = [
+    {
+      src: sprites.other['official-artwork'].front_default,
+      alt: `${pokemonName} official artwork`,
+      label: 'Official',
+    },
+    {
+      src: sprites.other['official-artwork'].front_shiny,
+      alt: `${pokemonName} shiny official artwork`,
+      label: 'Shiny Art',
+    },
+    {
+      src: sprites.front_default,
+      alt: `${pokemonName} front`,
+      label: 'Front',
+    },
+    {
+      src: sprites.back_default,
+      alt: `${pokemonName} back`,
+      label: 'Back',
+    },
+    {
+      src: sprites.front_shiny,
+      alt: `${pokemonName} shiny front`,
+      label: 'Shiny',
+    },
+    {
+      src: sprites.back_shiny,
+      alt: `${pokemonName} shiny back`,
+      label: 'Shiny Back',
+    },
+    {
+      src: sprites.front_female,
+      alt: `${pokemonName} female`,
+      label: 'Female',
+    },
+    {
+      src: sprites.back_female,
+      alt: `${pokemonName} female back`,
+      label: 'Female Back',
+    },
+    {
+      src: sprites.front_shiny_female,
+      alt: `${pokemonName} shiny female`,
+      label: 'Shiny ♀',
+    },
+    {
+      src: sprites.back_shiny_female,
+      alt: `${pokemonName} shiny female back`,
+      label: 'Shiny ♀ Back',
+    },
+  ].filter((sprite) => sprite.src !== null)
 
-  const mainImage =
-    variant === 'shiny'
-      ? sprites.other['official-artwork'].front_shiny
-      : sprites.other['official-artwork'].front_default
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
-  const hasShiny = !!sprites.other['official-artwork'].front_shiny
+  if (allSprites.length === 0) {
+    return (
+      <div className={cn('space-y-4', className)}>
+        <div className="bg-muted/30 flex aspect-square items-center justify-center rounded-2xl p-4">
+          <div className="text-muted-foreground text-sm">
+            No image available
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const selectedSprite = allSprites[selectedIndex] ?? allSprites[0]
 
   return (
     <div className={cn('space-y-4', className)}>
       {/* Main image */}
       <div className="bg-muted/30 flex aspect-square items-center justify-center rounded-2xl p-4">
-        {mainImage ? (
+        {selectedSprite.src && (
           <img
-            src={mainImage}
-            alt={`${pokemonName} ${variant}`}
-            className="h-full w-full object-contain drop-shadow-lg"
+            src={selectedSprite.src}
+            alt={selectedSprite.alt}
+            className="max-h-full max-w-full object-contain drop-shadow-lg"
           />
-        ) : (
-          <div className="text-muted-foreground text-sm">
-            No image available
-          </div>
         )}
       </div>
 
-      {/* Variant toggle */}
-      {hasShiny && (
-        <div className="flex justify-center gap-2">
-          <button
-            onClick={() => setVariant('default')}
-            className={cn(
-              'rounded-lg px-3 py-1.5 text-sm font-medium transition-all',
-              variant === 'default'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted hover:bg-muted/80',
-            )}
-          >
-            Default
-          </button>
-          <button
-            onClick={() => setVariant('shiny')}
-            className={cn(
-              'rounded-lg px-3 py-1.5 text-sm font-medium transition-all',
-              variant === 'shiny'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted hover:bg-muted/80',
-            )}
-          >
-            Shiny
-          </button>
+      {/* Sprite thumbnails - all clickable */}
+      {allSprites.length > 1 && (
+        <div className="flex flex-wrap justify-center gap-2">
+          {allSprites.map((sprite, index) => (
+            <button
+              key={sprite.label}
+              onClick={() => setSelectedIndex(index)}
+              className={cn(
+                'flex flex-col items-center gap-1 rounded-lg p-1 transition-all',
+                selectedIndex === index
+                  ? 'bg-primary/10 ring-primary ring-2'
+                  : 'hover:bg-muted',
+              )}
+            >
+              <div className="bg-muted/50 flex size-12 items-center justify-center rounded-lg">
+                <img
+                  src={sprite.src!}
+                  alt={sprite.alt}
+                  className="size-10 object-contain"
+                />
+              </div>
+              <span
+                className={cn(
+                  'text-xs',
+                  selectedIndex === index
+                    ? 'text-primary font-medium'
+                    : 'text-muted-foreground',
+                )}
+              >
+                {sprite.label}
+              </span>
+            </button>
+          ))}
         </div>
       )}
-
-      {/* Sprite thumbnails */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {sprites.front_default && (
-          <SpriteThumb
-            src={sprites.front_default}
-            alt={`${pokemonName} front`}
-            label="Front"
-          />
-        )}
-        {sprites.back_default && (
-          <SpriteThumb
-            src={sprites.back_default}
-            alt={`${pokemonName} back`}
-            label="Back"
-          />
-        )}
-        {sprites.front_shiny && (
-          <SpriteThumb
-            src={sprites.front_shiny}
-            alt={`${pokemonName} shiny front`}
-            label="Shiny"
-          />
-        )}
-        {sprites.front_female && (
-          <SpriteThumb
-            src={sprites.front_female}
-            alt={`${pokemonName} female`}
-            label="Female"
-          />
-        )}
-      </div>
-    </div>
-  )
-}
-
-function SpriteThumb({
-  src,
-  alt,
-  label,
-}: {
-  src: string
-  alt: string
-  label: string
-}) {
-  return (
-    <div className="flex flex-col items-center gap-1">
-      <div className="bg-muted/50 flex size-12 items-center justify-center rounded-lg">
-        <img src={src} alt={alt} className="size-10" />
-      </div>
-      <span className="text-muted-foreground text-xs">{label}</span>
     </div>
   )
 }

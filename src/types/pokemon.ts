@@ -28,6 +28,17 @@ export interface Pokemon {
   species: NamedAPIResource
   forms: Array<NamedAPIResource>
   moves: Array<PokemonMove>
+  held_items: Array<PokemonHeldItem>
+}
+
+export interface PokemonHeldItem {
+  item: NamedAPIResource
+  version_details: Array<PokemonHeldItemVersion>
+}
+
+export interface PokemonHeldItemVersion {
+  version: NamedAPIResource
+  rarity: number
 }
 
 export interface PokemonSprites {
