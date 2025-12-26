@@ -39,3 +39,8 @@ export const CACHE_TIMES = {
 export const DEBOUNCE_DELAYS = {
   search: 300,
 } as const
+
+// Feature flags
+// Use TanStack DB for favorites/compare instead of React Context
+// Set VITE_USE_TANSTACK_DB=true in .env to enable
+export const USE_TANSTACK_DB = import.meta.env.VITE_USE_TANSTACK_DB === 'true'

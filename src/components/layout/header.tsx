@@ -8,8 +8,8 @@ import {
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { useFavorites } from '@/contexts/favorites-context'
-import { useCompare } from '@/contexts/compare-context'
+import { useFavorites } from '@/hooks/use-favorites'
+import { useCompare } from '@/hooks/use-compare'
 import { getRandomPokemonId } from '@/lib/pokemon-utils'
 
 export function Header() {

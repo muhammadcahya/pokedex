@@ -22,7 +22,7 @@ import { PokemonTypes } from '@/components/pokemon/pokemon-types'
 import { PokemonStats } from '@/components/pokemon/pokemon-stats'
 import { PokemonAbilities } from '@/components/pokemon/pokemon-abilities'
 import { PokemonWeaknesses } from '@/components/pokemon/pokemon-weaknesses'
-import { useCompare } from '@/contexts/compare-context'
+import { useCompare } from '@/hooks/use-compare'
 import {
   formatHeight,
   formatPokemonId,

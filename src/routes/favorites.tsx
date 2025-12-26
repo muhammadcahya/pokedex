@@ -15,8 +15,8 @@ import {
   PokemonCard,
   PokemonCardSkeleton,
 } from '@/components/pokemon/pokemon-card'
-import { useFavorites } from '@/contexts/favorites-context'
-import { useCompare } from '@/contexts/compare-context'
+import { useFavorites } from '@/hooks/use-favorites'
+import { useCompare } from '@/hooks/use-compare'
 
 export const Route = createFileRoute('/favorites')({
   head: () => ({

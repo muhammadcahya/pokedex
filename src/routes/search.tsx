@@ -1,9 +1,12 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { zodValidator } from '@tanstack/zod-adapter'
-import { FileSearchIcon, XIcon } from '@phosphor-icons/react'
+import {
+  MagnifyingGlassIcon,
+  SpeakerHifiIcon,
+  XIcon,
+} from '@phosphor-icons/react'
 import { z } from 'zod'
 
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
@@ -17,6 +20,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group'
 
 const CategorySchema = z.enum(['electronics', 'clothing', 'books', 'toys'])
 const SearchSortOptionsSchema = z.enum(['newest', 'oldest'])
@@ -96,24 +105,26 @@ function Search() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="search-query">Keywords</Label>
-                  <div className="relative">
-                    <FileSearchIcon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                    <Input
+                  <InputGroup>
+                    <InputGroupInput
                       id="search-query"
                       placeholder="Search..."
                       value={query || ''}
                       onChange={(e) => updateFilters('query', e.target.value)}
-                      className="pl-9"
                     />
+                    <InputGroupAddon>
+                      <MagnifyingGlassIcon />
+                    </InputGroupAddon>
                     {query && (
-                      <button
-                        onClick={() => updateFilters('query', undefined)}
-                        className="text-muted-foreground hover:text-foreground absolute top-2.5 right-2.5"
-                      >
-                        <XIcon className="h-4 w-4" />
-                      </button>
+                      <InputGroupAddon align="inline-end">
+                        <InputGroupButton
+                          onClick={() => updateFilters('query', undefined)}
+                        >
+                          <XIcon className="h-4 w-4" />
+                        </InputGroupButton>
+                      </InputGroupAddon>
                     )}
-                  </div>
+                  </InputGroup>
                 </div>
 
                 <div className="flex items-center justify-between rounded-lg border p-3">

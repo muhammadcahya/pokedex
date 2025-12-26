@@ -26,8 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useFavorites } from '@/contexts/favorites-context'
-import { useCompare } from '@/contexts/compare-context'
+import { useFavorites } from '@/hooks/use-favorites'
+import { useCompare } from '@/hooks/use-compare'
 import { TOTAL_POKEMON, getGenerationByRegion } from '@/lib/generation-data'
 import {
   applyClientFilters,
