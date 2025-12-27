@@ -99,13 +99,16 @@ export function PokemonCard({
         to="/pokemon/$pokemonId"
         params={{ pokemonId: String(id) }}
         preload="intent"
+        viewTransition
         className="focus-visible:ring-ring flex flex-col rounded-xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
       >
         <CardContent className="flex flex-col items-center gap-2 pt-4">
           {/* Pokemon image */}
           <div
-            className="bg-muted/50 flex size-24 items-center justify-center rounded-full"
-            style={{ viewTransitionName: `pokemon-image-${id}` }}
+            className={cn(
+              'bg-muted/50 flex size-24 items-center justify-center rounded-full',
+              `[view-transition-name:pokemon-image-${id}]`,
+            )}
           >
             <img
               src={getSpriteById(id)}
@@ -121,12 +124,14 @@ export function PokemonCard({
               {formatPokemonId(id)}
             </span>
             <span
-              className="font-medium"
-              style={{ viewTransitionName: `pokemon-name-${id}` }}
+              className={cn(
+                'font-medium',
+                `[view-transition-name:pokemon-name-${id}]`,
+              )}
             >
               {formatPokemonName(name)}
             </span>
-            <div style={{ viewTransitionName: `pokemon-types-${id}` }}>
+            <div className={`[view-transition-name:pokemon-types-${id}]`}>
               <PokemonTypes types={types} size="sm" />
             </div>
           </div>

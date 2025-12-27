@@ -31,6 +31,7 @@ import {
   getArtworkById,
 } from '@/lib/pokemon-utils'
 import { MAX_COMPARE_POKEMON } from '@/lib/constants'
+import { cn } from '@/lib/utils'
 
 export const Route = createFileRoute('/compare')({
   head: () => ({
@@ -171,11 +172,14 @@ function CompareCard({ pokemon, onRemove }: CompareCardProps) {
           <Link
             to="/pokemon/$pokemonId"
             params={{ pokemonId: String(pokemon.id) }}
+            viewTransition
             className="group"
           >
             <div
-              className="bg-muted/30 mb-2 flex size-32 items-center justify-center rounded-2xl"
-              style={{ viewTransitionName: `pokemon-image-${pokemon.id}` }}
+              className={cn(
+                'bg-muted/30 mb-2 flex size-32 items-center justify-center rounded-2xl',
+                `[view-transition-name:pokemon-image-${pokemon.id}]`,
+              )}
             >
               <img
                 src={getArtworkById(pokemon.id)}
@@ -190,8 +194,11 @@ function CompareCard({ pokemon, onRemove }: CompareCardProps) {
           <Link
             to="/pokemon/$pokemonId"
             params={{ pokemonId: String(pokemon.id) }}
-            className="font-medium hover:underline"
-            style={{ viewTransitionName: `pokemon-name-${pokemon.id}` }}
+            viewTransition
+            className={cn(
+              'font-medium hover:underline',
+              `[view-transition-name:pokemon-name-${pokemon.id}]`,
+            )}
           >
             {formatPokemonName(pokemon.name)}
           </Link>
@@ -202,7 +209,7 @@ function CompareCard({ pokemon, onRemove }: CompareCardProps) {
           <h3 className="text-muted-foreground mb-1 text-xs font-medium">
             Type
           </h3>
-          <div style={{ viewTransitionName: `pokemon-types-${pokemon.id}` }}>
+          <div className={`[view-transition-name:pokemon-types-${pokemon.id}]`}>
             <PokemonTypes types={pokemon.types} size="sm" />
           </div>
         </div>

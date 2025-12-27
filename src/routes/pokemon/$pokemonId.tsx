@@ -185,7 +185,7 @@ function PokemonDetailPage() {
           <div className="space-y-6">
             {/* Sprites */}
             <div
-              style={{ viewTransitionName: `pokemon-image-${pokemonIdNum}` }}
+              className={`[view-transition-name:pokemon-image-${pokemonIdNum}]`}
             >
               <PokemonSpritesGallery
                 sprites={pokemon.sprites}
@@ -224,8 +224,10 @@ function PokemonDetailPage() {
                   {formatPokemonId(pokemonIdNum)}
                 </p>
                 <h1
-                  className="text-3xl font-bold"
-                  style={{ viewTransitionName: `pokemon-name-${pokemonIdNum}` }}
+                  className={cn(
+                    'text-3xl font-bold',
+                    `[view-transition-name:pokemon-name-${pokemonIdNum}]`,
+                  )}
                 >
                   {formatPokemonName(pokemon.name)}
                 </h1>
@@ -264,7 +266,7 @@ function PokemonDetailPage() {
             <div>
               <h2 className="mb-2 text-sm font-medium">Type</h2>
               <div
-                style={{ viewTransitionName: `pokemon-types-${pokemonIdNum}` }}
+                className={`[view-transition-name:pokemon-types-${pokemonIdNum}]`}
               >
                 <PokemonTypes types={pokemon.types} clickable size="lg" />
               </div>
