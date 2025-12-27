@@ -184,10 +184,14 @@ function PokemonDetailPage() {
           {/* Left column */}
           <div className="space-y-6">
             {/* Sprites */}
-            <PokemonSpritesGallery
-              sprites={pokemon.sprites}
-              pokemonName={pokemon.name}
-            />
+            <div
+              style={{ viewTransitionName: `pokemon-image-${pokemonIdNum}` }}
+            >
+              <PokemonSpritesGallery
+                sprites={pokemon.sprites}
+                pokemonName={pokemon.name}
+              />
+            </div>
 
             {/* Cry player */}
             <div className="flex justify-center">
@@ -219,7 +223,10 @@ function PokemonDetailPage() {
                 <p className="text-muted-foreground text-sm">
                   {formatPokemonId(pokemonIdNum)}
                 </p>
-                <h1 className="text-3xl font-bold">
+                <h1
+                  className="text-3xl font-bold"
+                  style={{ viewTransitionName: `pokemon-name-${pokemonIdNum}` }}
+                >
                   {formatPokemonName(pokemon.name)}
                 </h1>
                 {genus && <p className="text-muted-foreground mt-1">{genus}</p>}
@@ -256,7 +263,11 @@ function PokemonDetailPage() {
             {/* Types */}
             <div>
               <h2 className="mb-2 text-sm font-medium">Type</h2>
-              <PokemonTypes types={pokemon.types} clickable size="lg" />
+              <div
+                style={{ viewTransitionName: `pokemon-types-${pokemonIdNum}` }}
+              >
+                <PokemonTypes types={pokemon.types} clickable size="lg" />
+              </div>
             </div>
 
             {/* About - Enhanced */}

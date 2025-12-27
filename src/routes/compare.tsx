@@ -173,7 +173,10 @@ function CompareCard({ pokemon, onRemove }: CompareCardProps) {
             params={{ pokemonId: String(pokemon.id) }}
             className="group"
           >
-            <div className="bg-muted/30 mb-2 flex size-32 items-center justify-center rounded-2xl">
+            <div
+              className="bg-muted/30 mb-2 flex size-32 items-center justify-center rounded-2xl"
+              style={{ viewTransitionName: `pokemon-image-${pokemon.id}` }}
+            >
               <img
                 src={getArtworkById(pokemon.id)}
                 alt={pokemon.name}
@@ -188,6 +191,7 @@ function CompareCard({ pokemon, onRemove }: CompareCardProps) {
             to="/pokemon/$pokemonId"
             params={{ pokemonId: String(pokemon.id) }}
             className="font-medium hover:underline"
+            style={{ viewTransitionName: `pokemon-name-${pokemon.id}` }}
           >
             {formatPokemonName(pokemon.name)}
           </Link>
@@ -198,7 +202,9 @@ function CompareCard({ pokemon, onRemove }: CompareCardProps) {
           <h3 className="text-muted-foreground mb-1 text-xs font-medium">
             Type
           </h3>
-          <PokemonTypes types={pokemon.types} size="sm" />
+          <div style={{ viewTransitionName: `pokemon-types-${pokemon.id}` }}>
+            <PokemonTypes types={pokemon.types} size="sm" />
+          </div>
         </div>
 
         {/* Physical stats */}
