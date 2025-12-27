@@ -53,7 +53,7 @@ export function Header() {
             render={<Link to="/search" />}
             nativeButton={false}
           >
-            <MagnifyingGlassIcon weight="fill" />
+            <MagnifyingGlassIcon />
             <span className="hidden sm:inline">Search</span>
           </Button>
 

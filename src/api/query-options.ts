@@ -1,5 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query'
 import {
+  echoSearchParams,
   getAbilityDetails,
   getAllAbilities,
   getAllTypes,
@@ -15,6 +16,7 @@ import {
   getPokemonSpecies,
   getTypeDetails,
 } from './server-functions'
+import type { ParsedFilterState } from '@/lib/schemas/search'
 import { CACHE_TIMES, DEFAULT_PAGE_SIZE, MAX_POKEMON } from '@/lib/constants'
 
 // Infinite query for Pokemon list (for infinite scroll)
@@ -171,4 +173,16 @@ export const pokemonBasicInfoBatchOptions = (ids: Array<number>) =>
     staleTime: CACHE_TIMES.pokemonDetails,
     gcTime: CACHE_TIMES.pokemonDetails,
     enabled: ids.length > 0,
+  })
+
+// Echo search params (for demo purposes - shows server round-trip)
+export const echoSearchParamsOptions = (
+  filters: ParsedFilterState,
+  delay?: number,
+) =>
+  queryOptions({
+    queryKey: ['echo-search-params', filters],
+    queryFn: () => echoSearchParams({ data: { filters, delay } }),
+    staleTime: 0, // Always refetch to show loading state
+    gcTime: 0,
   })

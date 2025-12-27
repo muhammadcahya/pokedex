@@ -1,4 +1,5 @@
 import { createServerFn } from '@tanstack/react-start'
+import type { ParsedFilterState } from '@/lib/schemas/search'
 import type {
   AbilityDetails,
   Pokemon,
@@ -285,4 +286,73 @@ export const getPokemonBasicInfoBatch = createServerFn({ method: 'GET' })
 
     const results = await Promise.all(pokemonPromises)
     return results.filter((p): p is PokemonBasicInfo => p !== null)
+  })
+
+// Response type for echo search params
+export interface EchoSearchResponse {
+  receivedAt: string
+  processingTime: number
+  filters: ParsedFilterState
+  summary: {
+    totalFiltersActive: number
+    searchTerm: string | null
+    selectedTypes: Array<string>
+    selectedRegions: Array<string>
+    hasRangeFilter: boolean
+    hasBooleanFilters: boolean
+  }
+  serverInfo: {
+    nodeVersion: string
+    timestamp: number
+  }
+}
+
+// Echo search params back with simulated delay (for demo purposes)
+export const echoSearchParams = createServerFn({ method: 'POST' })
+  .inputValidator(
+    (data: { filters: ParsedFilterState; delay?: number }) => data,
+  )
+  .handler(async ({ data }) => {
+    const startTime = Date.now()
+
+    // Simulate network/processing delay (default 800ms, max 3000ms)
+    const delay = Math.min(data.delay ?? 800, 3000)
+    await new Promise((resolve) => setTimeout(resolve, delay))
+
+    const processingTime = Date.now() - startTime
+
+    // Count active filters
+    let totalFiltersActive = 0
+    if (data.filters.search) totalFiltersActive++
+    totalFiltersActive += data.filters.types.length
+    totalFiltersActive += data.filters.regions.length
+    if (data.filters.height !== 'all') totalFiltersActive++
+    if (data.filters.weight !== 'all') totalFiltersActive++
+    if (data.filters.legendaryOnly) totalFiltersActive++
+    if (data.filters.hasEvolution) totalFiltersActive++
+    if (data.filters.minStats !== null) totalFiltersActive++
+    if (data.filters.statRange[0] !== 0 || data.filters.statRange[1] !== 720)
+      totalFiltersActive++
+
+    const response: EchoSearchResponse = {
+      receivedAt: new Date().toISOString(),
+      processingTime,
+      filters: data.filters,
+      summary: {
+        totalFiltersActive,
+        searchTerm: data.filters.search || null,
+        selectedTypes: data.filters.types,
+        selectedRegions: data.filters.regions,
+        hasRangeFilter:
+          data.filters.statRange[0] !== 0 || data.filters.statRange[1] !== 720,
+        hasBooleanFilters:
+          data.filters.legendaryOnly || data.filters.hasEvolution,
+      },
+      serverInfo: {
+        nodeVersion: process.version,
+        timestamp: Date.now(),
+      },
+    }
+
+    return response
   })

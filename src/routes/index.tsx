@@ -86,7 +86,7 @@ function HomePage() {
           <img src="/pokemon-logo.svg" alt="Pokemon" className="h-16 w-auto" />
           <p className="text-muted-foreground max-w-md">
             Explore and discover all Pokemon from every generation. Search,
-            filter, and find your favorites.
+            filter, and find your favorites. <b>Catch 'em all</b>
           </p>
         </div>
 
