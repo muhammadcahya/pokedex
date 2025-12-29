@@ -90,7 +90,10 @@ export function PokemonCard({
 
       {/* Always show favorite indicator if favorited */}
       {isFavorite && (
-        <div className="absolute top-2 left-2 z-10">
+        <div
+          className="absolute top-2 left-2 z-10"
+          style={{ viewTransitionName: `pokemon-favorite-${id}` }}
+        >
           <HeartIcon className="text-red-500" weight="fill" />
         </div>
       )}
@@ -105,10 +108,8 @@ export function PokemonCard({
         <CardContent className="flex flex-col items-center gap-2 pt-4">
           {/* Pokemon image */}
           <div
-            className={cn(
-              'bg-muted/50 flex size-24 items-center justify-center rounded-full',
-              `[view-transition-name:pokemon-image-${id}]`,
-            )}
+            className="bg-muted/50 flex size-24 items-center justify-center rounded-full"
+            style={{ viewTransitionName: `pokemon-image-${id}` }}
           >
             <img
               src={getSpriteById(id)}
@@ -124,14 +125,12 @@ export function PokemonCard({
               {formatPokemonId(id)}
             </span>
             <span
-              className={cn(
-                'font-medium',
-                `[view-transition-name:pokemon-name-${id}]`,
-              )}
+              className="font-medium"
+              style={{ viewTransitionName: `pokemon-name-${id}` }}
             >
               {formatPokemonName(name)}
             </span>
-            <div className={`[view-transition-name:pokemon-types-${id}]`}>
+            <div style={{ viewTransitionName: `pokemon-types-${id}` }}>
               <PokemonTypes types={types} size="sm" />
             </div>
           </div>

@@ -185,7 +185,7 @@ function PokemonDetailPage() {
           <div className="space-y-6">
             {/* Sprites */}
             <div
-              className={`[view-transition-name:pokemon-image-${pokemonIdNum}]`}
+              style={{ viewTransitionName: `pokemon-image-${pokemonIdNum}` }}
             >
               <PokemonSpritesGallery
                 sprites={pokemon.sprites}
@@ -207,7 +207,13 @@ function PokemonDetailPage() {
                 <CardTitle className="text-base">Base Stats</CardTitle>
               </CardHeader>
               <CardContent>
-                <PokemonStats stats={pokemon.stats} />
+                <div
+                  style={{
+                    viewTransitionName: `pokemon-stats-${pokemonIdNum}`,
+                  }}
+                >
+                  <PokemonStats stats={pokemon.stats} />
+                </div>
               </CardContent>
             </Card>
 
@@ -224,10 +230,8 @@ function PokemonDetailPage() {
                   {formatPokemonId(pokemonIdNum)}
                 </p>
                 <h1
-                  className={cn(
-                    'text-3xl font-bold',
-                    `[view-transition-name:pokemon-name-${pokemonIdNum}]`,
-                  )}
+                  className="text-3xl font-bold"
+                  style={{ viewTransitionName: `pokemon-name-${pokemonIdNum}` }}
                 >
                   {formatPokemonName(pokemon.name)}
                 </h1>
@@ -245,6 +249,13 @@ function PokemonDetailPage() {
                     )
                   }
                   className={cn(isFav && 'bg-red-500 hover:bg-red-600')}
+                  style={
+                    isFav
+                      ? {
+                          viewTransitionName: `pokemon-favorite-${pokemonIdNum}`,
+                        }
+                      : undefined
+                  }
                 >
                   <HeartIcon weight={isFav ? 'fill' : 'regular'} />
                 </Button>
@@ -256,6 +267,13 @@ function PokemonDetailPage() {
                     toggleCompare(pokemonIdNum, formatPokemonName(pokemon.name))
                   }
                   disabled={!isCompare && !canAddMore}
+                  style={
+                    isCompare
+                      ? {
+                          viewTransitionName: `pokemon-compare-${pokemonIdNum}`,
+                        }
+                      : undefined
+                  }
                 >
                   {isCompare ? <CheckIcon weight="bold" /> : <PlusIcon />}
                 </Button>
@@ -266,7 +284,7 @@ function PokemonDetailPage() {
             <div>
               <h2 className="mb-2 text-sm font-medium">Type</h2>
               <div
-                className={`[view-transition-name:pokemon-types-${pokemonIdNum}]`}
+                style={{ viewTransitionName: `pokemon-types-${pokemonIdNum}` }}
               >
                 <PokemonTypes types={pokemon.types} clickable size="lg" />
               </div>
@@ -294,7 +312,13 @@ function PokemonDetailPage() {
                 <CardTitle className="text-base">Weaknesses</CardTitle>
               </CardHeader>
               <CardContent>
-                <PokemonWeaknesses types={pokemon.types} clickable />
+                <div
+                  style={{
+                    viewTransitionName: `pokemon-weaknesses-${pokemonIdNum}`,
+                  }}
+                >
+                  <PokemonWeaknesses types={pokemon.types} clickable />
+                </div>
               </CardContent>
             </Card>
 
@@ -304,7 +328,13 @@ function PokemonDetailPage() {
                 <CardTitle className="text-base">Abilities</CardTitle>
               </CardHeader>
               <CardContent>
-                <PokemonAbilities abilities={pokemon.abilities} clickable />
+                <div
+                  style={{
+                    viewTransitionName: `pokemon-abilities-${pokemonIdNum}`,
+                  }}
+                >
+                  <PokemonAbilities abilities={pokemon.abilities} clickable />
+                </div>
               </CardContent>
             </Card>
 
