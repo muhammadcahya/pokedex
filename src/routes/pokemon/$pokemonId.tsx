@@ -156,6 +156,7 @@ function PokemonDetailPage() {
                 ) : undefined
               }
               nativeButton={false}
+              aria-label="Previous Pokemon"
             >
               <ArrowLeftIcon />
               Previous
@@ -173,6 +174,7 @@ function PokemonDetailPage() {
                 ) : undefined
               }
               nativeButton={false}
+              aria-label="Next Pokemon"
             >
               Next
               <ArrowRightIcon />
@@ -208,6 +210,7 @@ function PokemonDetailPage() {
               </CardHeader>
               <CardContent>
                 <div
+                  data-testid="pokemon-stats"
                   style={{
                     viewTransitionName: `pokemon-stats-${pokemonIdNum}`,
                   }}
@@ -256,6 +259,9 @@ function PokemonDetailPage() {
                         }
                       : undefined
                   }
+                  aria-label={
+                    isFav ? 'Remove from favorites' : 'Add to favorites'
+                  }
                 >
                   <HeartIcon weight={isFav ? 'fill' : 'regular'} />
                 </Button>
@@ -274,6 +280,9 @@ function PokemonDetailPage() {
                         }
                       : undefined
                   }
+                  aria-label={
+                    isCompare ? 'Remove from compare' : 'Add to compare'
+                  }
                 >
                   {isCompare ? <CheckIcon weight="bold" /> : <PlusIcon />}
                 </Button>
@@ -284,6 +293,7 @@ function PokemonDetailPage() {
             <div>
               <h2 className="mb-2 text-sm font-medium">Type</h2>
               <div
+                data-testid="pokemon-type"
                 style={{ viewTransitionName: `pokemon-types-${pokemonIdNum}` }}
               >
                 <PokemonTypes types={pokemon.types} clickable size="lg" />
@@ -367,6 +377,7 @@ function PokemonDetailPage() {
                 />
               }
               nativeButton={false}
+              aria-label="Previous Pokemon"
             >
               <ArrowLeftIcon />
               Previous
@@ -385,6 +396,7 @@ function PokemonDetailPage() {
                 />
               }
               nativeButton={false}
+              aria-label="Next Pokemon"
             >
               Next
               <ArrowRightIcon />

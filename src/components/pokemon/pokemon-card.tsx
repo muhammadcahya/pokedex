@@ -41,7 +41,10 @@ export function PokemonCard({
   canAddToCompare,
 }: PokemonCardProps) {
   return (
-    <Card className="group/pokemon-card relative transition-all hover:shadow-lg">
+    <Card
+      data-testid="pokemon-card"
+      className="group/pokemon-card relative transition-all hover:shadow-lg"
+    >
       {/* Action buttons */}
       <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 transition-opacity group-hover/pokemon-card:opacity-100">
         <Tooltip>
@@ -55,6 +58,9 @@ export function PokemonCard({
               'bg-background/80 hover:bg-muted inline-flex size-6 items-center justify-center rounded-md backdrop-blur-sm',
               isFavorite && 'text-red-500',
             )}
+            aria-label={
+              isFavorite ? 'Remove from favorites' : 'Add to favorites'
+            }
           >
             <HeartIcon weight={isFavorite ? 'fill' : 'regular'} />
           </TooltipTrigger>
@@ -75,6 +81,7 @@ export function PokemonCard({
               'bg-background/80 hover:bg-muted inline-flex size-6 items-center justify-center rounded-md backdrop-blur-sm disabled:opacity-50',
               isInCompare && 'text-primary',
             )}
+            aria-label={isInCompare ? 'Remove from compare' : 'Add to compare'}
           >
             {isInCompare ? <CheckIcon weight="bold" /> : <PlusIcon />}
           </TooltipTrigger>
