@@ -5,73 +5,490 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 
+  =======================================================================
+  LAYER 1: THEME PRESETS (THE SWITCHBOARD)
+  =======================================================================
+  We use [data-theme] attributes to swap the "Base" variables.
+  This connects your --base-brand-* to Tailwind's official colors.
+*/
+
+/* --- 1A. DEFAULT THEME (Fallbacks) --- */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.58 0.22 27);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Default Brand: Blue */
+  --base-brand-50: var(--color-blue-50);
+  --base-brand-100: var(--color-blue-100);
+  --base-brand-200: var(--color-blue-200);
+  --base-brand-300: var(--color-blue-300);
+  --base-brand-400: var(--color-blue-400);
+  --base-brand-500: var(--color-blue-500);
+  --base-brand-600: var(--color-blue-600);
+  --base-brand-700: var(--color-blue-700);
+  --base-brand-800: var(--color-blue-800);
+  --base-brand-900: var(--color-blue-900);
+  --base-brand-950: var(--color-blue-950);
+
+  /* Default Surface: Zinc (Cleanest neutral) */
+  --base-surface-0: var(--color-white);
+  --base-surface-50: var(--color-zinc-50);
+  --base-surface-100: var(--color-zinc-100);
+  --base-surface-200: var(--color-zinc-200);
+  --base-surface-300: var(--color-zinc-300);
+  --base-surface-400: var(--color-zinc-400);
+  --base-surface-500: var(--color-zinc-500);
+  --base-surface-600: var(--color-zinc-600);
+  --base-surface-700: var(--color-zinc-700);
+  --base-surface-800: var(--color-zinc-800);
+  --base-surface-900: var(--color-zinc-900);
+  --base-surface-950: var(--color-zinc-950);
+
+  /* Destructive is usually Red, rarely changes */
+  --base-destruct-50: var(--color-red-50);
+  --base-destruct-500: var(--color-red-500);
+  --base-destruct-600: var(--color-red-600);
+  --base-destruct-900: var(--color-red-900);
+}
+
+/* --- 1B. BRAND PRESETS (data-theme="name") --- */
+
+/* COOL COLORS */
+@variant theme-slate   (&[data-theme="slate"]);
+@variant theme-gray    (&[data-theme="gray"]);
+@variant theme-zinc    (&[data-theme="zinc"]);
+@variant theme-neutral (&[data-theme="neutral"]);
+@variant theme-stone   (&[data-theme="stone"]);
+@variant theme-blue    (&[data-theme="blue"]);
+@variant theme-indigo  (&[data-theme="indigo"]);
+@variant theme-violet  (&[data-theme="violet"]);
+@variant theme-sky     (&[data-theme="sky"]);
+@variant theme-cyan    (&[data-theme="cyan"]);
+@variant theme-teal    (&[data-theme="teal"]);
+@variant theme-emerald (&[data-theme="emerald"]);
+@variant theme-green   (&[data-theme="green"]);
+@variant theme-lime    (&[data-theme="lime"]);
+
+/* WARM COLORS */
+@variant theme-yellow  (&[data-theme="yellow"]);
+@variant theme-amber   (&[data-theme="amber"]);
+@variant theme-orange  (&[data-theme="orange"]);
+@variant theme-red     (&[data-theme="red"]);
+@variant theme-rose    (&[data-theme="rose"]);
+@variant theme-pink    (&[data-theme="pink"]);
+@variant theme-fuchsia (&[data-theme="fuchsia"]);
+@variant theme-purple  (&[data-theme="purple"]);
+
+/* The Mixing Logic: This maps the attribute to the variables */
+/* Note: We use a loop-like structure by repeating for clarity, or you can use a mixin concept if using SASS, but for raw CSS: */
+
+:root[data-theme='red'] {
+  --base-brand-50: var(--color-red-50);
+  --base-brand-100: var(--color-red-100);
+  --base-brand-200: var(--color-red-200);
+  --base-brand-300: var(--color-red-300);
+  --base-brand-400: var(--color-red-400);
+  --base-brand-500: var(--color-red-500);
+  --base-brand-600: var(--color-red-600);
+  --base-brand-700: var(--color-red-700);
+  --base-brand-800: var(--color-red-800);
+  --base-brand-900: var(--color-red-900);
+  --base-brand-950: var(--color-red-950);
+}
+:root[data-theme='orange'] {
+  --base-brand-50: var(--color-orange-50);
+  --base-brand-100: var(--color-orange-100);
+  --base-brand-200: var(--color-orange-200);
+  --base-brand-300: var(--color-orange-300);
+  --base-brand-400: var(--color-orange-400);
+  --base-brand-500: var(--color-orange-500);
+  --base-brand-600: var(--color-orange-600);
+  --base-brand-700: var(--color-orange-700);
+  --base-brand-800: var(--color-orange-800);
+  --base-brand-900: var(--color-orange-900);
+  --base-brand-950: var(--color-orange-950);
+}
+:root[data-theme='amber'] {
+  --base-brand-50: var(--color-amber-50);
+  --base-brand-100: var(--color-amber-100);
+  --base-brand-200: var(--color-amber-200);
+  --base-brand-300: var(--color-amber-300);
+  --base-brand-400: var(--color-amber-400);
+  --base-brand-500: var(--color-amber-500);
+  --base-brand-600: var(--color-amber-600);
+  --base-brand-700: var(--color-amber-700);
+  --base-brand-800: var(--color-amber-800);
+  --base-brand-900: var(--color-amber-900);
+  --base-brand-950: var(--color-amber-950);
+}
+:root[data-theme='yellow'] {
+  --base-brand-50: var(--color-yellow-50);
+  --base-brand-100: var(--color-yellow-100);
+  --base-brand-200: var(--color-yellow-200);
+  --base-brand-300: var(--color-yellow-300);
+  --base-brand-400: var(--color-yellow-400);
+  --base-brand-500: var(--color-yellow-500);
+  --base-brand-600: var(--color-yellow-600);
+  --base-brand-700: var(--color-yellow-700);
+  --base-brand-800: var(--color-yellow-800);
+  --base-brand-900: var(--color-yellow-900);
+  --base-brand-950: var(--color-yellow-950);
+}
+:root[data-theme='lime'] {
+  --base-brand-50: var(--color-lime-50);
+  --base-brand-100: var(--color-lime-100);
+  --base-brand-200: var(--color-lime-200);
+  --base-brand-300: var(--color-lime-300);
+  --base-brand-400: var(--color-lime-400);
+  --base-brand-500: var(--color-lime-500);
+  --base-brand-600: var(--color-lime-600);
+  --base-brand-700: var(--color-lime-700);
+  --base-brand-800: var(--color-lime-800);
+  --base-brand-900: var(--color-lime-900);
+  --base-brand-950: var(--color-lime-950);
+}
+:root[data-theme='green'] {
+  --base-brand-50: var(--color-green-50);
+  --base-brand-100: var(--color-green-100);
+  --base-brand-200: var(--color-green-200);
+  --base-brand-300: var(--color-green-300);
+  --base-brand-400: var(--color-green-400);
+  --base-brand-500: var(--color-green-500);
+  --base-brand-600: var(--color-green-600);
+  --base-brand-700: var(--color-green-700);
+  --base-brand-800: var(--color-green-800);
+  --base-brand-900: var(--color-green-900);
+  --base-brand-950: var(--color-green-950);
+}
+:root[data-theme='emerald'] {
+  --base-brand-50: var(--color-emerald-50);
+  --base-brand-100: var(--color-emerald-100);
+  --base-brand-200: var(--color-emerald-200);
+  --base-brand-300: var(--color-emerald-300);
+  --base-brand-400: var(--color-emerald-400);
+  --base-brand-500: var(--color-emerald-500);
+  --base-brand-600: var(--color-emerald-600);
+  --base-brand-700: var(--color-emerald-700);
+  --base-brand-800: var(--color-emerald-800);
+  --base-brand-900: var(--color-emerald-900);
+  --base-brand-950: var(--color-emerald-950);
+}
+:root[data-theme='teal'] {
+  --base-brand-50: var(--color-teal-50);
+  --base-brand-100: var(--color-teal-100);
+  --base-brand-200: var(--color-teal-200);
+  --base-brand-300: var(--color-teal-300);
+  --base-brand-400: var(--color-teal-400);
+  --base-brand-500: var(--color-teal-500);
+  --base-brand-600: var(--color-teal-600);
+  --base-brand-700: var(--color-teal-700);
+  --base-brand-800: var(--color-teal-800);
+  --base-brand-900: var(--color-teal-900);
+  --base-brand-950: var(--color-teal-950);
+}
+:root[data-theme='cyan'] {
+  --base-brand-50: var(--color-cyan-50);
+  --base-brand-100: var(--color-cyan-100);
+  --base-brand-200: var(--color-cyan-200);
+  --base-brand-300: var(--color-cyan-300);
+  --base-brand-400: var(--color-cyan-400);
+  --base-brand-500: var(--color-cyan-500);
+  --base-brand-600: var(--color-cyan-600);
+  --base-brand-700: var(--color-cyan-700);
+  --base-brand-800: var(--color-cyan-800);
+  --base-brand-900: var(--color-cyan-900);
+  --base-brand-950: var(--color-cyan-950);
+}
+:root[data-theme='sky'] {
+  --base-brand-50: var(--color-sky-50);
+  --base-brand-100: var(--color-sky-100);
+  --base-brand-200: var(--color-sky-200);
+  --base-brand-300: var(--color-sky-300);
+  --base-brand-400: var(--color-sky-400);
+  --base-brand-500: var(--color-sky-500);
+  --base-brand-600: var(--color-sky-600);
+  --base-brand-700: var(--color-sky-700);
+  --base-brand-800: var(--color-sky-800);
+  --base-brand-900: var(--color-sky-900);
+  --base-brand-950: var(--color-sky-950);
+}
+:root[data-theme='blue'] {
+  --base-brand-50: var(--color-blue-50);
+  --base-brand-100: var(--color-blue-100);
+  --base-brand-200: var(--color-blue-200);
+  --base-brand-300: var(--color-blue-300);
+  --base-brand-400: var(--color-blue-400);
+  --base-brand-500: var(--color-blue-500);
+  --base-brand-600: var(--color-blue-600);
+  --base-brand-700: var(--color-blue-700);
+  --base-brand-800: var(--color-blue-800);
+  --base-brand-900: var(--color-blue-900);
+  --base-brand-950: var(--color-blue-950);
+}
+:root[data-theme='indigo'] {
+  --base-brand-50: var(--color-indigo-50);
+  --base-brand-100: var(--color-indigo-100);
+  --base-brand-200: var(--color-indigo-200);
+  --base-brand-300: var(--color-indigo-300);
+  --base-brand-400: var(--color-indigo-400);
+  --base-brand-500: var(--color-indigo-500);
+  --base-brand-600: var(--color-indigo-600);
+  --base-brand-700: var(--color-indigo-700);
+  --base-brand-800: var(--color-indigo-800);
+  --base-brand-900: var(--color-indigo-900);
+  --base-brand-950: var(--color-indigo-950);
+}
+:root[data-theme='violet'] {
+  --base-brand-50: var(--color-violet-50);
+  --base-brand-100: var(--color-violet-100);
+  --base-brand-200: var(--color-violet-200);
+  --base-brand-300: var(--color-violet-300);
+  --base-brand-400: var(--color-violet-400);
+  --base-brand-500: var(--color-violet-500);
+  --base-brand-600: var(--color-violet-600);
+  --base-brand-700: var(--color-violet-700);
+  --base-brand-800: var(--color-violet-800);
+  --base-brand-900: var(--color-violet-900);
+  --base-brand-950: var(--color-violet-950);
+}
+:root[data-theme='purple'] {
+  --base-brand-50: var(--color-purple-50);
+  --base-brand-100: var(--color-purple-100);
+  --base-brand-200: var(--color-purple-200);
+  --base-brand-300: var(--color-purple-300);
+  --base-brand-400: var(--color-purple-400);
+  --base-brand-500: var(--color-purple-500);
+  --base-brand-600: var(--color-purple-600);
+  --base-brand-700: var(--color-purple-700);
+  --base-brand-800: var(--color-purple-800);
+  --base-brand-900: var(--color-purple-900);
+  --base-brand-950: var(--color-purple-950);
+}
+:root[data-theme='fuchsia'] {
+  --base-brand-50: var(--color-fuchsia-50);
+  --base-brand-100: var(--color-fuchsia-100);
+  --base-brand-200: var(--color-fuchsia-200);
+  --base-brand-300: var(--color-fuchsia-300);
+  --base-brand-400: var(--color-fuchsia-400);
+  --base-brand-500: var(--color-fuchsia-500);
+  --base-brand-600: var(--color-fuchsia-600);
+  --base-brand-700: var(--color-fuchsia-700);
+  --base-brand-800: var(--color-fuchsia-800);
+  --base-brand-900: var(--color-fuchsia-900);
+  --base-brand-950: var(--color-fuchsia-950);
+}
+:root[data-theme='pink'] {
+  --base-brand-50: var(--color-pink-50);
+  --base-brand-100: var(--color-pink-100);
+  --base-brand-200: var(--color-pink-200);
+  --base-brand-300: var(--color-pink-300);
+  --base-brand-400: var(--color-pink-400);
+  --base-brand-500: var(--color-pink-500);
+  --base-brand-600: var(--color-pink-600);
+  --base-brand-700: var(--color-pink-700);
+  --base-brand-800: var(--color-pink-800);
+  --base-brand-900: var(--color-pink-900);
+  --base-brand-950: var(--color-pink-950);
+}
+:root[data-theme='rose'] {
+  --base-brand-50: var(--color-rose-50);
+  --base-brand-100: var(--color-rose-100);
+  --base-brand-200: var(--color-rose-200);
+  --base-brand-300: var(--color-rose-300);
+  --base-brand-400: var(--color-rose-400);
+  --base-brand-500: var(--color-rose-500);
+  --base-brand-600: var(--color-rose-600);
+  --base-brand-700: var(--color-rose-700);
+  --base-brand-800: var(--color-rose-800);
+  --base-brand-900: var(--color-rose-900);
+  --base-brand-950: var(--color-rose-950);
+}
+/* Allow "black and white" brand */
+:root[data-theme='slate'] {
+  --base-brand-50: var(--color-slate-50);
+  --base-brand-100: var(--color-slate-100);
+  --base-brand-200: var(--color-slate-200);
+  --base-brand-300: var(--color-slate-300);
+  --base-brand-400: var(--color-slate-400);
+  --base-brand-500: var(--color-slate-500);
+  --base-brand-600: var(--color-slate-600);
+  --base-brand-700: var(--color-slate-700);
+  --base-brand-800: var(--color-slate-800);
+  --base-brand-900: var(--color-slate-900);
+  --base-brand-950: var(--color-slate-950);
+}
+
+/* --- 1D. SURFACE/GRAY PRESETS (data-surface="name") --- */
+
+:root[data-surface='slate'] {
+  --base-surface-50: var(--color-slate-50);
+  --base-surface-100: var(--color-slate-100);
+  --base-surface-200: var(--color-slate-200);
+  --base-surface-300: var(--color-slate-300);
+  --base-surface-400: var(--color-slate-400);
+  --base-surface-500: var(--color-slate-500);
+  --base-surface-600: var(--color-slate-600);
+  --base-surface-700: var(--color-slate-700);
+  --base-surface-800: var(--color-slate-800);
+  --base-surface-900: var(--color-slate-900);
+  --base-surface-950: var(--color-slate-950);
+}
+:root[data-surface='gray'] {
+  --base-surface-50: var(--color-gray-50);
+  --base-surface-100: var(--color-gray-100);
+  --base-surface-200: var(--color-gray-200);
+  --base-surface-300: var(--color-gray-300);
+  --base-surface-400: var(--color-gray-400);
+  --base-surface-500: var(--color-gray-500);
+  --base-surface-600: var(--color-gray-600);
+  --base-surface-700: var(--color-gray-700);
+  --base-surface-800: var(--color-gray-800);
+  --base-surface-900: var(--color-gray-900);
+  --base-surface-950: var(--color-gray-950);
+}
+:root[data-surface='zinc'] {
+  --base-surface-50: var(--color-zinc-50);
+  --base-surface-100: var(--color-zinc-100);
+  --base-surface-200: var(--color-zinc-200);
+  --base-surface-300: var(--color-zinc-300);
+  --base-surface-400: var(--color-zinc-400);
+  --base-surface-500: var(--color-zinc-500);
+  --base-surface-600: var(--color-zinc-600);
+  --base-surface-700: var(--color-zinc-700);
+  --base-surface-800: var(--color-zinc-800);
+  --base-surface-900: var(--color-zinc-900);
+  --base-surface-950: var(--color-zinc-950);
+}
+:root[data-surface='neutral'] {
+  --base-surface-50: var(--color-neutral-50);
+  --base-surface-100: var(--color-neutral-100);
+  --base-surface-200: var(--color-neutral-200);
+  --base-surface-300: var(--color-neutral-300);
+  --base-surface-400: var(--color-neutral-400);
+  --base-surface-500: var(--color-neutral-500);
+  --base-surface-600: var(--color-neutral-600);
+  --base-surface-700: var(--color-neutral-700);
+  --base-surface-800: var(--color-neutral-800);
+  --base-surface-900: var(--color-neutral-900);
+  --base-surface-950: var(--color-neutral-950);
+}
+:root[data-surface='stone'] {
+  --base-surface-50: var(--color-stone-50);
+  --base-surface-100: var(--color-stone-100);
+  --base-surface-200: var(--color-stone-200);
+  --base-surface-300: var(--color-stone-300);
+  --base-surface-400: var(--color-stone-400);
+  --base-surface-500: var(--color-stone-500);
+  --base-surface-600: var(--color-stone-600);
+  --base-surface-700: var(--color-stone-700);
+  --base-surface-800: var(--color-stone-800);
+  --base-surface-900: var(--color-stone-900);
+  --base-surface-950: var(--color-stone-950);
+}
+
+/* 
+  =======================================================================
+  LAYER 2: LOGIC (SHADCN MAPPING)
+  =======================================================================
+  This section NEVER changes. It automatically eats whatever
+  variable you fed it in Layer 1.
+*/
+
+:root {
+  /* BASE TOKENS */
+  --background: var(--base-surface-0);
+  --foreground: var(--base-surface-950);
+
+  --card: var(--base-surface-0);
+  --card-foreground: var(--base-surface-950);
+
+  --popover: var(--base-surface-0);
+  --popover-foreground: var(--base-surface-950);
+
+  /* BRAND TOKENS */
+  --primary: var(--base-brand-600);
+  --primary-foreground: var(--base-brand-50);
+
+  /* MIXED TOKENS (Using Surface for subtlety) */
+  --secondary: var(--base-surface-100);
+  --secondary-foreground: var(--base-surface-900);
+
+  --muted: var(--base-surface-100);
+  --muted-foreground: var(--base-surface-500);
+
+  --accent: var(--base-surface-100);
+  --accent-foreground: var(--base-surface-900);
+
+  /* UTILITY TOKENS */
+  --border: var(--base-surface-200);
+  --input: var(--base-surface-200);
+  --ring: var(--base-brand-600);
+
+  --radius: 0.65rem;
+
+  /* DESTRUCTIVE TOKENS */
+  --destructive: var(--base-destruct-500);
+  --destructive-foreground: var(--base-destruct-50);
+
+  /* CHARTS (Simple Auto-Map) */
+  --chart-1: var(--base-brand-500);
+  --chart-2: var(--base-brand-400);
+  --chart-3: var(--base-brand-600);
+  --chart-4: var(--base-brand-300);
+  --chart-5: var(--base-brand-700);
+
+  /* SIDEBAR */
+  --sidebar-background: var(--base-surface-50);
+  --sidebar-foreground: var(--base-surface-950);
+  --sidebar-primary: var(--base-brand-600);
+  --sidebar-primary-foreground: var(--base-brand-50);
+  --sidebar-accent: var(--base-surface-200);
+  --sidebar-accent-foreground: var(--base-surface-900);
+  --sidebar-border: var(--base-surface-200);
+  --sidebar-ring: var(--base-surface-400);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* BASE DARK */
+  --background: var(--base-surface-950);
+  --foreground: var(--base-surface-50);
+
+  --card: var(--base-surface-950);
+  --card-foreground: var(--base-surface-50);
+
+  --popover: var(--base-surface-950);
+  --popover-foreground: var(--base-surface-50);
+
+  /* BRAND DARK (Shift to 500 for visibility) */
+  --primary: var(--base-brand-500);
+  --primary-foreground: var(--base-brand-950);
+
+  /* MIXED DARK */
+  --secondary: var(--base-surface-800);
+  --secondary-foreground: var(--base-surface-50);
+
+  --muted: var(--base-surface-800);
+  --muted-foreground: var(--base-surface-400);
+
+  --accent: var(--base-surface-800);
+  --accent-foreground: var(--base-surface-50);
+
+  /* UTILITY DARK */
+  --border: var(--base-surface-800);
+  --input: var(--base-surface-800);
+  --ring: var(--base-brand-500);
+
+  /* DESTRUCTIVE DARK */
+  --destructive: var(--base-destruct-900);
+  --destructive-foreground: var(--base-destruct-50);
+
+  /* SIDEBAR DARK */
+  --sidebar-background: var(--base-surface-950);
+  --sidebar-foreground: var(--base-surface-50);
+  --sidebar-primary: var(--base-brand-500);
+  --sidebar-primary-foreground: var(--base-brand-950);
+  --sidebar-accent: var(--base-surface-800);
+  --sidebar-accent-foreground: var(--base-surface-50);
+  --sidebar-border: var(--base-surface-800);
+  --sidebar-ring: var(--base-surface-400);
 }
 
 @theme inline {

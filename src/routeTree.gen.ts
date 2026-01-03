@@ -13,6 +13,7 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PurchaseOrderIndexRouteImport } from './routes/purchase-order/index'
 import { Route as PokemonPokemonIdRouteImport } from './routes/pokemon/$pokemonId'
 
 const SearchRoute = SearchRouteImport.update({
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PurchaseOrderIndexRoute = PurchaseOrderIndexRouteImport.update({
+  id: '/purchase-order/',
+  path: '/purchase-order/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PokemonPokemonIdRoute = PokemonPokemonIdRouteImport.update({
   id: '/pokemon/$pokemonId',
   path: '/pokemon/$pokemonId',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof FavoritesRoute
   '/search': typeof SearchRoute
   '/pokemon/$pokemonId': typeof PokemonPokemonIdRoute
+  '/purchase-order': typeof PurchaseOrderIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/favorites': typeof FavoritesRoute
   '/search': typeof SearchRoute
   '/pokemon/$pokemonId': typeof PokemonPokemonIdRoute
+  '/purchase-order': typeof PurchaseOrderIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,12 +70,25 @@ export interface FileRoutesById {
   '/favorites': typeof FavoritesRoute
   '/search': typeof SearchRoute
   '/pokemon/$pokemonId': typeof PokemonPokemonIdRoute
+  '/purchase-order/': typeof PurchaseOrderIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/compare' | '/favorites' | '/search' | '/pokemon/$pokemonId'
+  fullPaths:
+    | '/'
+    | '/compare'
+    | '/favorites'
+    | '/search'
+    | '/pokemon/$pokemonId'
+    | '/purchase-order'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/compare' | '/favorites' | '/search' | '/pokemon/$pokemonId'
+  to:
+    | '/'
+    | '/compare'
+    | '/favorites'
+    | '/search'
+    | '/pokemon/$pokemonId'
+    | '/purchase-order'
   id:
     | '__root__'
     | '/'
@@ -75,6 +96,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/search'
     | '/pokemon/$pokemonId'
+    | '/purchase-order/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,6 +105,7 @@ export interface RootRouteChildren {
   FavoritesRoute: typeof FavoritesRoute
   SearchRoute: typeof SearchRoute
   PokemonPokemonIdRoute: typeof PokemonPokemonIdRoute
+  PurchaseOrderIndexRoute: typeof PurchaseOrderIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -115,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/purchase-order/': {
+      id: '/purchase-order/'
+      path: '/purchase-order'
+      fullPath: '/purchase-order'
+      preLoaderRoute: typeof PurchaseOrderIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pokemon/$pokemonId': {
       id: '/pokemon/$pokemonId'
       path: '/pokemon/$pokemonId'
@@ -131,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   FavoritesRoute: FavoritesRoute,
   SearchRoute: SearchRoute,
   PokemonPokemonIdRoute: PokemonPokemonIdRoute,
+  PurchaseOrderIndexRoute: PurchaseOrderIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

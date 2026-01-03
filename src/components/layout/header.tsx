@@ -5,6 +5,7 @@ import {
   MagnifyingGlassIcon,
   ScalesIcon,
   ShuffleIcon,
+  TicketIcon,
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -87,6 +88,17 @@ export function Header() {
                 {compareCount}
               </span>
             )}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            render={<Link to="/purchase-order" />}
+            nativeButton={false}
+          >
+            <TicketIcon />
+            <span className="hidden sm:inline">Purchase Order</span>
           </Button>
 
           <ThemeToggle />

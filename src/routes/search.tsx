@@ -147,7 +147,7 @@ function Search() {
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupAddon>
-                        <MagnifyingGlassIcon className="size-4" />
+                        <MagnifyingGlassIcon />
                       </InputGroupAddon>
                       <InputGroupInput
                         id="search-input"
@@ -471,7 +471,7 @@ function Search() {
                       onClick={resetFilters}
                       className="w-full"
                     >
-                      <XIcon className="mr-2 size-4" />
+                      <XIcon />
                       Reset All Filters
                     </Button>
                   )}
@@ -654,10 +654,10 @@ function Search() {
                     <CardTitle className="flex items-center gap-2">
                       Server Response
                       {isFetching && (
-                        <SpinnerIcon className="text-muted-foreground size-4 animate-spin" />
+                        <SpinnerIcon className="text-muted-foreground animate-spin" />
                       )}
                       {!isFetching && apiResponse && (
-                        <CheckCircleIcon className="size-4 text-green-500" />
+                        <CheckCircleIcon className="text-green-500" />
                       )}
                     </CardTitle>
                     <CardDescription>
@@ -672,10 +672,7 @@ function Search() {
                     disabled={isFetching}
                   >
                     <ArrowsClockwiseIcon
-                      className={cn(
-                        'mr-2 size-4',
-                        isFetching && 'animate-spin',
-                      )}
+                      className={cn(isFetching && 'animate-spin')}
                     />
                     Refetch
                   </Button>
