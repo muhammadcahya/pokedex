@@ -2,6 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import {
   HeadContent,
   Outlet,
+  ScriptOnce,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
@@ -16,6 +17,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { FavoritesProvider } from '@/contexts/favorites-context'
 import { CompareProvider } from '@/contexts/compare-context'
+import { ThemeCustomizerProvider } from '@/contexts/theme-customizer-context'
 
 export const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
@@ -69,21 +71,29 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      data-theme="blue"
-      data-surface="zinc"
-      suppressHydrationWarning
-    >
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
         <ThemeProvider>
-          <TooltipProvider>
-            {children}
-            <Toaster richColors />
-          </TooltipProvider>
+          <ThemeCustomizerProvider>
+            <ScriptOnce>
+              {`(() => {
+                try {
+                  const stored = localStorage.getItem('pokedex-theme-config');
+                  const config = stored ? JSON.parse(stored) : { theme: 'blue', surface: 'zinc', radius: 0.5 };
+                  document.documentElement.setAttribute('data-theme', config.theme);
+                  document.documentElement.setAttribute('data-surface', config.surface);
+                  document.documentElement.style.setProperty('--radius', config.radius + 'rem');
+                } catch {}
+              })()`}
+            </ScriptOnce>
+            <TooltipProvider>
+              {children}
+              <Toaster richColors />
+            </TooltipProvider>
+          </ThemeCustomizerProvider>
         </ThemeProvider>
         {import.meta.env.DEV && (
           <TanStackDevtools

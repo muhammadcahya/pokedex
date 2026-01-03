@@ -289,7 +289,7 @@ export function DocumentHeader({
                             !headerData.poDate && 'text-muted-foreground',
                           )}
                         >
-                          <CalendarBlankIcon className="mr-2 h-4 w-4" />
+                          <CalendarBlankIcon />
                           {headerData.poDate
                             ? format(new Date(headerData.poDate), 'PPP')
                             : 'Pick a date'}

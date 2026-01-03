@@ -77,6 +77,10 @@
 @variant theme-fuchsia (&[data-theme="fuchsia"]);
 @variant theme-purple  (&[data-theme="purple"]);
 
+/* SPECIAL */
+@variant theme-black   (&[data-theme="black"]);
+@variant theme-shadcn  (&[data-theme="shadcn"]);
+
 /* The Mixing Logic: This maps the attribute to the variables */
 /* Note: We use a loop-like structure by repeating for clarity, or you can use a mixin concept if using SASS, but for raw CSS: */
 
@@ -314,6 +318,141 @@
   --base-brand-800: var(--color-slate-800);
   --base-brand-900: var(--color-slate-900);
   --base-brand-950: var(--color-slate-950);
+}
+:root[data-theme='gray'] {
+  --base-brand-50: var(--color-gray-50);
+  --base-brand-100: var(--color-gray-100);
+  --base-brand-200: var(--color-gray-200);
+  --base-brand-300: var(--color-gray-300);
+  --base-brand-400: var(--color-gray-400);
+  --base-brand-500: var(--color-gray-500);
+  --base-brand-600: var(--color-gray-600);
+  --base-brand-700: var(--color-gray-700);
+  --base-brand-800: var(--color-gray-800);
+  --base-brand-900: var(--color-gray-900);
+  --base-brand-950: var(--color-gray-950);
+}
+:root[data-theme='zinc'] {
+  --base-brand-50: var(--color-zinc-50);
+  --base-brand-100: var(--color-zinc-100);
+  --base-brand-200: var(--color-zinc-200);
+  --base-brand-300: var(--color-zinc-300);
+  --base-brand-400: var(--color-zinc-400);
+  --base-brand-500: var(--color-zinc-500);
+  --base-brand-600: var(--color-zinc-600);
+  --base-brand-700: var(--color-zinc-700);
+  --base-brand-800: var(--color-zinc-800);
+  --base-brand-900: var(--color-zinc-900);
+  --base-brand-950: var(--color-zinc-950);
+}
+:root[data-theme='neutral'] {
+  --base-brand-50: var(--color-neutral-50);
+  --base-brand-100: var(--color-neutral-100);
+  --base-brand-200: var(--color-neutral-200);
+  --base-brand-300: var(--color-neutral-300);
+  --base-brand-400: var(--color-neutral-400);
+  --base-brand-500: var(--color-neutral-500);
+  --base-brand-600: var(--color-neutral-600);
+  --base-brand-700: var(--color-neutral-700);
+  --base-brand-800: var(--color-neutral-800);
+  --base-brand-900: var(--color-neutral-900);
+  --base-brand-950: var(--color-neutral-950);
+}
+:root[data-theme='stone'] {
+  --base-brand-50: var(--color-stone-50);
+  --base-brand-100: var(--color-stone-100);
+  --base-brand-200: var(--color-stone-200);
+  --base-brand-300: var(--color-stone-300);
+  --base-brand-400: var(--color-stone-400);
+  --base-brand-500: var(--color-stone-500);
+  --base-brand-600: var(--color-stone-600);
+  --base-brand-700: var(--color-stone-700);
+  --base-brand-800: var(--color-stone-800);
+  --base-brand-900: var(--color-stone-900);
+  --base-brand-950: var(--color-stone-950);
+}
+
+:root[data-theme='black'] {
+  --base-brand-50: oklch(1 0 0); /* pure white */
+  --base-brand-100: oklch(0.95 0 0);
+  --base-brand-200: oklch(0.9 0 0);
+  --base-brand-300: oklch(0.8 0 0);
+  --base-brand-400: oklch(0.7 0 0);
+  --base-brand-500: oklch(0.5 0 0); /* medium gray */
+  --base-brand-600: oklch(0.2 0 0); /* dark gray for primary */
+  --base-brand-700: oklch(0.15 0 0);
+  --base-brand-800: oklch(0.1 0 0);
+  --base-brand-900: oklch(0.05 0 0);
+  --base-brand-950: oklch(0 0 0); /* pure black */
+}
+
+/* Special shadcn theme - uses OKLCH directly, bypassing the base-brand system */
+:root[data-theme='shadcn'] {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar-background: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+:root[data-theme='shadcn'].dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.269 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.371 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar-background: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.439 0 0);
 }
 
 /* --- 1D. SURFACE/GRAY PRESETS (data-surface="name") --- */

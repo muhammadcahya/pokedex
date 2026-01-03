@@ -9,6 +9,7 @@ import {
 } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeCustomizerButton } from '@/components/theme-customizer/theme-customizer-button'
 import { useFavorites } from '@/hooks/use-favorites'
 import { useCompare } from '@/hooks/use-compare'
 import { getRandomPokemonId } from '@/lib/pokemon-utils'
@@ -101,6 +102,7 @@ export function Header() {
             <span className="hidden sm:inline">Purchase Order</span>
           </Button>
 
+          <ThemeCustomizerButton />
           <ThemeToggle />
         </div>
       </div>

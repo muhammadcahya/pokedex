@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { useSidebar } from '@/components/ui/sidebar'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { ThemeCustomizerButton } from '@/components/theme-customizer/theme-customizer-button'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -42,6 +43,7 @@ export function SiteHeader() {
         </Breadcrumb>
         <div className="ml-auto flex items-center gap-2">
           <SearchForm />
+          <ThemeCustomizerButton />
           <ThemeToggle />
         </div>
       </div>
