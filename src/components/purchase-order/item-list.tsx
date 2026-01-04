@@ -32,8 +32,8 @@ export function ItemList({
   return (
     <div className="overflow-hidden rounded-b-lg">
       <Table className="w-full text-xs">
-        <TableHeader className="border-t whitespace-nowrap">
-          <TableRow className="bg-muted">
+        <TableHeader className="bg-muted/80 border-t whitespace-nowrap">
+          <TableRow className="bg-muted hover:bg-muted">
             <TableHead className="text-center">#</TableHead>
             <TableHead className="text-left">PR Number</TableHead>
             <TableHead className="text-left">Description</TableHead>

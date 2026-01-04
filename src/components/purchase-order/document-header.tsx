@@ -63,8 +63,13 @@ export function DocumentHeader({
   return (
     <>
       <Accordion defaultValue={['header']}>
-        <AccordionItem value="header" className="rounded-lg border">
-          <AccordionTrigger className="px-4">Document Header</AccordionTrigger>
+        <AccordionItem
+          value="header"
+          className="bg-card rounded-lg border shadow-sm"
+        >
+          <AccordionTrigger className="bg-muted px-4">
+            Document Header
+          </AccordionTrigger>
           <AccordionContent className="overflow-x-auto pb-0">
             <div className="border-t px-4 py-3">
               <ApprovalList />

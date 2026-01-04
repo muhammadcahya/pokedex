@@ -9,7 +9,7 @@ export const Route = createFileRoute('/purchase-order/')({
 function PurchaseOrderPage() {
   return (
     <PurchaseOrderLayout>
-      <div className="container mx-auto flex h-full flex-col p-4">
+      <div className="bg-muted/50 container mx-auto flex h-full flex-col p-4">
         <PurchaseOrderForm fixedScroll={false} />
       </div>
     </PurchaseOrderLayout>

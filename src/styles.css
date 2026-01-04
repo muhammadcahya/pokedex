@@ -15,6 +15,15 @@
 
 /* --- 1A. DEFAULT THEME (Fallbacks) --- */
 :root {
+  /* Base Neutrals */
+  --base-white: var(--color-white); /* oklch(1 0 0) */
+  --base-black: var(--color-black); /* oklch(0 0 0) */
+
+  /* DEFAULT BRAND CONTRAST TEXT 
+     This is the magic variable. Default is White. 
+     We will switch this to Black for light themes below. */
+  --base-brand-text: var(--base-white);
+
   /* Default Brand: Blue */
   --base-brand-50: var(--color-blue-50);
   --base-brand-100: var(--color-blue-100);
@@ -44,7 +53,8 @@
 
   /* Destructive is usually Red, rarely changes */
   --base-destruct-50: var(--color-red-50);
-  --base-destruct-500: var(--color-red-500);
+  --base-destruct-400: var(--color-red-400); /* The "Shadcn" Red */
+  --base-destruct-500: var(--color-red-500); /* The "Neon" Red */
   --base-destruct-600: var(--color-red-600);
   --base-destruct-900: var(--color-red-900);
 }
@@ -84,6 +94,11 @@
 /* The Mixing Logic: This maps the attribute to the variables */
 /* Note: We use a loop-like structure by repeating for clarity, or you can use a mixin concept if using SASS, but for raw CSS: */
 
+/* 
+   ------------------------------
+   STANDARD THEMES (White Text) 
+   ------------------------------
+*/
 :root[data-theme='red'] {
   --base-brand-50: var(--color-red-50);
   --base-brand-100: var(--color-red-100);
@@ -109,45 +124,6 @@
   --base-brand-800: var(--color-orange-800);
   --base-brand-900: var(--color-orange-900);
   --base-brand-950: var(--color-orange-950);
-}
-:root[data-theme='amber'] {
-  --base-brand-50: var(--color-amber-50);
-  --base-brand-100: var(--color-amber-100);
-  --base-brand-200: var(--color-amber-200);
-  --base-brand-300: var(--color-amber-300);
-  --base-brand-400: var(--color-amber-400);
-  --base-brand-500: var(--color-amber-500);
-  --base-brand-600: var(--color-amber-600);
-  --base-brand-700: var(--color-amber-700);
-  --base-brand-800: var(--color-amber-800);
-  --base-brand-900: var(--color-amber-900);
-  --base-brand-950: var(--color-amber-950);
-}
-:root[data-theme='yellow'] {
-  --base-brand-50: var(--color-yellow-50);
-  --base-brand-100: var(--color-yellow-100);
-  --base-brand-200: var(--color-yellow-200);
-  --base-brand-300: var(--color-yellow-300);
-  --base-brand-400: var(--color-yellow-400);
-  --base-brand-500: var(--color-yellow-500);
-  --base-brand-600: var(--color-yellow-600);
-  --base-brand-700: var(--color-yellow-700);
-  --base-brand-800: var(--color-yellow-800);
-  --base-brand-900: var(--color-yellow-900);
-  --base-brand-950: var(--color-yellow-950);
-}
-:root[data-theme='lime'] {
-  --base-brand-50: var(--color-lime-50);
-  --base-brand-100: var(--color-lime-100);
-  --base-brand-200: var(--color-lime-200);
-  --base-brand-300: var(--color-lime-300);
-  --base-brand-400: var(--color-lime-400);
-  --base-brand-500: var(--color-lime-500);
-  --base-brand-600: var(--color-lime-600);
-  --base-brand-700: var(--color-lime-700);
-  --base-brand-800: var(--color-lime-800);
-  --base-brand-900: var(--color-lime-900);
-  --base-brand-950: var(--color-lime-950);
 }
 :root[data-theme='green'] {
   --base-brand-50: var(--color-green-50);
@@ -372,6 +348,61 @@
   --base-brand-950: var(--color-stone-950);
 }
 
+/* 
+   ------------------------------------------
+   LIGHT THEMES (Must have BLACK Text)
+   ------------------------------------------
+   We override --base-brand-text to Black.
+   We also shift brand-600 to 500 for better "Vibrancy" with black text.
+*/
+
+:root[data-theme='amber'] {
+  --base-brand-text: var(--base-black); /* Override to Black */
+  --base-brand-50: var(--color-amber-50);
+  --base-brand-100: var(--color-amber-100);
+  --base-brand-200: var(--color-amber-200);
+  --base-brand-300: var(--color-amber-300);
+  --base-brand-400: var(--color-amber-400);
+  --base-brand-500: var(--color-amber-500);
+  --base-brand-600: var(
+    --color-amber-500
+  ); /* Use 500 as primary to avoid muddy brown */
+  --base-brand-700: var(--color-amber-700);
+  --base-brand-800: var(--color-amber-800);
+  --base-brand-900: var(--color-amber-900);
+  --base-brand-950: var(--color-amber-950);
+}
+
+:root[data-theme='yellow'] {
+  --base-brand-text: var(--base-black); /* Override to Black */
+  --base-brand-50: var(--color-yellow-50);
+  --base-brand-100: var(--color-yellow-100);
+  --base-brand-200: var(--color-yellow-200);
+  --base-brand-300: var(--color-yellow-300);
+  --base-brand-400: var(--color-yellow-400);
+  --base-brand-500: var(--color-yellow-500);
+  --base-brand-600: var(--color-yellow-500); /* Use 500 as primary */
+  --base-brand-700: var(--color-yellow-700);
+  --base-brand-800: var(--color-yellow-800);
+  --base-brand-900: var(--color-yellow-900);
+  --base-brand-950: var(--color-yellow-950);
+}
+
+:root[data-theme='lime'] {
+  --base-brand-text: var(--base-black); /* Override to Black */
+  --base-brand-50: var(--color-lime-50);
+  --base-brand-100: var(--color-lime-100);
+  --base-brand-200: var(--color-lime-200);
+  --base-brand-300: var(--color-lime-300);
+  --base-brand-400: var(--color-lime-400);
+  --base-brand-500: var(--color-lime-500);
+  --base-brand-600: var(--color-lime-500); /* Use 500 as primary */
+  --base-brand-700: var(--color-lime-700);
+  --base-brand-800: var(--color-lime-800);
+  --base-brand-900: var(--color-lime-900);
+  --base-brand-950: var(--color-lime-950);
+}
+
 :root[data-theme='black'] {
   --base-brand-50: oklch(1 0 0); /* pure white */
   --base-brand-100: oklch(0.95 0 0);
@@ -544,9 +575,10 @@
 
   /* BRAND TOKENS */
   --primary: var(--base-brand-600);
-  --primary-foreground: var(--base-brand-50);
+  /* USE THE CONTRAST VARIABLE (White for Blue, Black for Yellow) */
+  --primary-foreground: var(--base-brand-text);
 
-  /* MIXED TOKENS (Using Surface for subtlety) */
+  /* MIXED TOKENS */
   --secondary: var(--base-surface-100);
   --secondary-foreground: var(--base-surface-900);
 
@@ -564,21 +596,21 @@
   --radius: 0.65rem;
 
   /* DESTRUCTIVE TOKENS */
-  --destructive: var(--base-destruct-500);
-  --destructive-foreground: var(--base-destruct-50);
+  --destructive: var(--base-destruct-600);
+  --destructive-foreground: var(--base-white);
 
-  /* CHARTS (Simple Auto-Map) */
-  --chart-1: var(--base-brand-500);
-  --chart-2: var(--base-brand-400);
-  --chart-3: var(--base-brand-600);
-  --chart-4: var(--base-brand-300);
-  --chart-5: var(--base-brand-700);
+  /* CHARTS */
+  --chart-1: var(--base-brand-600);
+  --chart-2: var(--color-teal-500);
+  --chart-3: var(--color-blue-500);
+  --chart-4: var(--color-amber-500);
+  --chart-5: var(--color-rose-500);
 
   /* SIDEBAR */
   --sidebar-background: var(--base-surface-50);
   --sidebar-foreground: var(--base-surface-950);
   --sidebar-primary: var(--base-brand-600);
-  --sidebar-primary-foreground: var(--base-brand-50);
+  --sidebar-primary-foreground: var(--base-brand-text);
   --sidebar-accent: var(--base-surface-200);
   --sidebar-accent-foreground: var(--base-surface-900);
   --sidebar-border: var(--base-surface-200);
@@ -590,15 +622,17 @@
   --background: var(--base-surface-950);
   --foreground: var(--base-surface-50);
 
-  --card: var(--base-surface-950);
+  /* Slightly lighter card for depth */
+  --card: var(--base-surface-900);
   --card-foreground: var(--base-surface-50);
 
-  --popover: var(--base-surface-950);
+  --popover: var(--base-surface-900);
   --popover-foreground: var(--base-surface-50);
 
-  /* BRAND DARK (Shift to 500 for visibility) */
+  /* BRAND DARK */
   --primary: var(--base-brand-500);
-  --primary-foreground: var(--base-brand-950);
+  /* Ensure this uses the contrast variable too */
+  --primary-foreground: var(--base-brand-text);
 
   /* MIXED DARK */
   --secondary: var(--base-surface-800);
@@ -613,17 +647,24 @@
   /* UTILITY DARK */
   --border: var(--base-surface-800);
   --input: var(--base-surface-800);
-  --ring: var(--base-brand-500);
+  --ring: var(--base-brand-400);
 
-  /* DESTRUCTIVE DARK */
-  --destructive: var(--base-destruct-900);
-  --destructive-foreground: var(--base-destruct-50);
+  /* DESTRUCTIVE DARK (Balanced Red) */
+  --destructive: var(--base-destruct-400);
+  --destructive-foreground: var(--base-white);
+
+  /* CHARTS DARK */
+  --chart-1: var(--base-brand-500);
+  --chart-2: var(--color-teal-400);
+  --chart-3: var(--color-blue-400);
+  --chart-4: var(--color-amber-400);
+  --chart-5: var(--color-rose-400);
 
   /* SIDEBAR DARK */
   --sidebar-background: var(--base-surface-950);
   --sidebar-foreground: var(--base-surface-50);
   --sidebar-primary: var(--base-brand-500);
-  --sidebar-primary-foreground: var(--base-brand-950);
+  --sidebar-primary-foreground: var(--base-brand-text);
   --sidebar-accent: var(--base-surface-800);
   --sidebar-accent-foreground: var(--base-surface-50);
   --sidebar-border: var(--base-surface-800);

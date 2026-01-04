@@ -15,7 +15,7 @@ export function ApprovalList() {
   return (
     <div className="w-full overflow-x-auto">
       <nav className="w-full md:w-max" aria-label="Approval Progress">
-        <ol className="border-border bg-muted/20 flex w-full flex-col overflow-hidden rounded-lg border md:flex-row">
+        <ol className="border-border bg-muted/40 flex w-full flex-col overflow-hidden rounded-lg border shadow-sm md:flex-row">
           {dummyApprovers.map((approver) => {
             const StatusIcon = statusConfig[approver.status].icon
             return (
@@ -25,7 +25,7 @@ export function ApprovalList() {
                     render={(props) => (
                       <div
                         {...props}
-                        className="border-border bg-background hover:bg-muted/50 relative flex cursor-pointer items-start border-b p-4 transition-colors md:h-full md:border-r md:border-b-0"
+                        className="border-border bg-card hover:bg-muted/50 relative flex cursor-pointer items-start border-b p-4 transition-colors md:h-full md:border-r md:border-b-0"
                       >
                         {/* Highlight bar */}
                         <div

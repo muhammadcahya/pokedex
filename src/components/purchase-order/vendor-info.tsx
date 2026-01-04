@@ -55,8 +55,13 @@ export function VendorInfo() {
   return (
     <>
       <Accordion defaultValue={['vendor']}>
-        <AccordionItem value="vendor" className="rounded-lg border">
-          <AccordionTrigger className="px-4">Vendor</AccordionTrigger>
+        <AccordionItem
+          value="vendor"
+          className="bg-card rounded-lg border shadow-sm"
+        >
+          <AccordionTrigger className="bg-muted px-4">
+            Vendor
+          </AccordionTrigger>
           <AccordionContent className="overflow-x-auto pb-0">
             {!selectedVendor ? (
               <Empty className="border-t py-8">

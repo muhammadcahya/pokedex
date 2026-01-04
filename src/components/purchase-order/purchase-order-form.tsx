@@ -43,7 +43,7 @@ export function PurchaseOrderForm({
 
   return (
     <div className="flex flex-col gap-4">
-      <Breadcrumb className="rounded-md border p-2 shadow-sm">
+      <Breadcrumb className="bg-card rounded-md border p-2 shadow-sm">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink

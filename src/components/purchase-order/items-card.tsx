@@ -68,10 +68,15 @@ export function ItemsCard() {
   return (
     <>
       <Accordion defaultValue={['items']}>
-        <AccordionItem value="items" className="rounded-lg border">
-          <AccordionTrigger className="px-4">Items</AccordionTrigger>
+        <AccordionItem
+          value="items"
+          className="bg-card rounded-lg border shadow-sm"
+        >
+          <AccordionTrigger className="bg-muted px-4">
+            Items
+          </AccordionTrigger>
           <AccordionContent className="pb-0">
-            <div className="flex gap-2 border-t p-3">
+            <div className="bg-muted flex gap-2 border-t p-3">
               <Button
                 variant="outline"
                 size="sm"

@@ -9,8 +9,11 @@ import { Textarea } from '@/components/ui/textarea'
 export function NoteCard() {
   return (
     <Accordion defaultValue={['note']}>
-      <AccordionItem value="note" className="rounded-lg border">
-        <AccordionTrigger className="px-4">Note</AccordionTrigger>
+      <AccordionItem
+        value="note"
+        className="bg-card rounded-lg border shadow-sm"
+      >
+        <AccordionTrigger className="bg-muted px-4">Note</AccordionTrigger>
         <AccordionContent className="pb-0">
           <Textarea
             placeholder="Enter additional notes here..."
