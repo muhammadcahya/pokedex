@@ -31,7 +31,7 @@ export function ItemList({
 }: ItemListProps) {
   return (
     <div className="overflow-hidden rounded-b-lg">
-      <Table className="w-full text-xs">
+      <Table className="text-xs">
         <TableHeader className="bg-muted/80 border-t whitespace-nowrap">
           <TableRow className="bg-muted hover:bg-muted">
             <TableHead className="text-center">#</TableHead>
@@ -64,8 +64,8 @@ export function ItemList({
             />
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
+        <TableFooter className="bg-muted/50">
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
             <TableHead colSpan={10} className="text-right font-bold">
               Sub Total
             </TableHead>
@@ -77,7 +77,7 @@ export function ItemList({
             </TableHead>
             <TableHead colSpan={5}></TableHead>
           </TableRow>
-          <TableRow>
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
             <TableHead colSpan={10} className="text-right font-bold">
               Final Discount
             </TableHead>
@@ -95,7 +95,7 @@ export function ItemList({
             </TableHead>
             <TableHead colSpan={5}></TableHead>
           </TableRow>
-          <TableRow>
+          <TableRow className="bg-muted/50 hover:bg-muted/50">
             <TableHead colSpan={10} className="text-right font-bold">
               VAT
             </TableHead>
@@ -107,7 +107,7 @@ export function ItemList({
             </TableHead>
             <TableHead colSpan={5}></TableHead>
           </TableRow>
-          <TableRow className="bg-muted">
+          <TableRow className="bg-muted hover:bg-muted">
             <TableHead colSpan={10} className="text-right font-bold">
               Grand Total
             </TableHead>

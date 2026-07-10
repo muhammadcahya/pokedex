@@ -1,12 +1,7 @@
 import { useState } from 'react'
 import { MagnifyingGlassIcon, TrashIcon, UserIcon } from '@phosphor-icons/react'
+import { ContentSection } from './content-section'
 import type { VendorData } from '@/lib/purchase-order/types'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -54,162 +49,176 @@ export function VendorInfo() {
 
   return (
     <>
-      <Accordion defaultValue={['vendor']}>
-        <AccordionItem
-          value="vendor"
-          className="bg-card rounded-lg border shadow-sm"
-        >
-          <AccordionTrigger className="bg-muted px-4">
-            Vendor
-          </AccordionTrigger>
-          <AccordionContent className="overflow-x-auto pb-0">
-            {!selectedVendor ? (
-              <Empty className="border-t py-8">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
+      <ContentSection
+        tabs={[
+          {
+            id: 'vendor',
+            label: 'Vendor',
+            content: selectedVendor ? (
+              <>
+                {/* Mobile Actions */}
+                <div className="flex gap-2 border-b p-3 md:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsSearchOpen(true)}
+                    className="flex-1"
+                  >
                     <UserIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No Vendor Selected</EmptyTitle>
-                  <EmptyDescription>
-                    Please select a vendor to see their information
-                  </EmptyDescription>
-                </EmptyHeader>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsSearchOpen(true)}
-                >
-                  <MagnifyingGlassIcon />
-                  Select Vendor
-                </Button>
-              </Empty>
-            ) : (
-              <div className="overflow-hidden rounded-b-lg">
-                <Table className="w-full border-t">
-                  <TableBody>
-                    <TableRow className="hover:bg-transparent">
-                      <TableCell colSpan={6} className="border-b px-4 py-3">
-                        <div className="font-mono text-xs">
-                          <div className="text-foreground mb-1 font-bold">
-                            {selectedVendor.name}
+                    Select Vendor
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={handleRemoveVendor}
+                  >
+                    Remove
+                  </Button>
+                </div>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableBody>
+                      <TableRow className="hover:bg-transparent">
+                        <TableCell colSpan={6} className="border-b px-4 py-3">
+                          <div className="font-mono text-xs">
+                            <div className="text-foreground mb-1 font-bold">
+                              {selectedVendor.name}
+                            </div>
+                            <div className="text-muted-foreground">
+                              {selectedVendor.address}
+                            </div>
                           </div>
-                          <div className="text-muted-foreground">
-                            {selectedVendor.address}
+                        </TableCell>
+                        <TableCell className="border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50">
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 align-baseline text-[10px] font-bold whitespace-nowrap uppercase">
+                          Delivery To
+                        </TableCell>
+                        <TableCell colSpan={5} className="border-b p-2">
+                          <div className="font-mono text-xs">
+                            <div className="text-foreground font-bold">
+                              Head Office
+                            </div>
+                            <div className="text-muted-foreground">
+                              {selectedVendor.address}
+                            </div>
+                            <div className="text-muted-foreground">
+                              {selectedVendor.phone}
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="border-t"></TableCell>
-                    </TableRow>
-                    <TableRow className="bg-muted/50 hover:bg-muted/50">
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 align-baseline text-[10px] font-bold whitespace-nowrap uppercase">
-                        Delivery To
-                      </TableCell>
-                      <TableCell colSpan={5} className="border-b p-2">
-                        <div className="font-mono text-xs">
-                          <div className="text-foreground font-bold">
-                            Head Office
-                          </div>
-                          <div className="text-muted-foreground">
-                            {selectedVendor.address}
-                          </div>
-                          <div className="text-muted-foreground">
-                            {selectedVendor.phone}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="border-t"></TableCell>
-                    </TableRow>
-                    <TableRow className="whitespace-nowrap hover:bg-transparent">
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        Vendor Code
-                      </TableCell>
-                      <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
-                        {selectedVendor.code}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        Bank Name
-                      </TableCell>
-                      <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
-                        {selectedVendor.bankName}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        NPWP Number
-                      </TableCell>
-                      <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
-                        {selectedVendor.npwpNumber}
-                      </TableCell>
-                      <TableCell className="border-t"></TableCell>
-                    </TableRow>
-                    <TableRow className="bg-muted/50 hover:bg-muted/50 whitespace-nowrap">
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        Tax Document
-                      </TableCell>
-                      <TableCell className="w-1 border-b p-2 font-mono text-xs">
-                        <a
-                          href="#"
-                          className="text-primary hover:text-primary/80"
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        </TableCell>
+                        <TableCell className="border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="whitespace-nowrap hover:bg-transparent">
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
+                          Vendor Code
+                        </TableCell>
+                        <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
+                          {selectedVendor.code}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
+                          Bank Name
+                        </TableCell>
+                        <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
+                          {selectedVendor.bankName}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
+                          NPWP Number
+                        </TableCell>
+                        <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
+                          {selectedVendor.npwpNumber}
+                        </TableCell>
+                        <TableCell className="border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50 whitespace-nowrap">
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
+                          Tax Document
+                        </TableCell>
+                        <TableCell className="w-1 border-b p-2 font-mono text-xs">
+                          <a
+                            href="#"
+                            className="text-primary hover:text-primary/80"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {selectedVendor.npwpFile}
+                          </a>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
+                          Branch
+                        </TableCell>
+                        <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
+                          {selectedVendor.branch}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
+                          Bank Acc No
+                        </TableCell>
+                        <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
+                          {selectedVendor.bankAccountNo}
+                        </TableCell>
+                        <TableCell className="border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="whitespace-nowrap hover:bg-transparent">
+                        <TableCell className="text-muted-foreground w-1 p-2 text-[10px] font-bold uppercase">
+                          Bank Acc Name
+                        </TableCell>
+                        <TableCell
+                          colSpan={5}
+                          className="text-foreground p-2 font-mono text-xs"
                         >
-                          {selectedVendor.npwpFile}
-                        </a>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        Branch
-                      </TableCell>
-                      <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
-                        {selectedVendor.branch}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        Bank Acc No
-                      </TableCell>
-                      <TableCell className="text-foreground w-1 border-b p-2 font-mono text-xs">
-                        {selectedVendor.bankAccountNo}
-                      </TableCell>
-                      <TableCell className="border-t"></TableCell>
-                    </TableRow>
-                    <TableRow className="whitespace-nowrap hover:bg-transparent">
-                      <TableCell className="text-muted-foreground w-1 border-b p-2 text-[10px] font-bold uppercase">
-                        Bank Acc Name
-                      </TableCell>
-                      <TableCell
-                        colSpan={5}
-                        className="text-foreground border-b p-2 font-mono text-xs"
-                      >
-                        {selectedVendor.bankAccountName}
-                      </TableCell>
-                      <TableCell className="border-t border-b"></TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-transparent">
-                      <TableCell colSpan={6} className="px-4 py-3">
-                        <div className="flex gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setIsSearchOpen(true)}
-                          >
-                            <MagnifyingGlassIcon />
-                            Select Vendor
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleRemoveVendor}
-                          >
-                            <TrashIcon />
-                            Remove Vendor
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+                          {selectedVendor.bankAccountName}
+                        </TableCell>
+                        <TableCell></TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </>
+            ) : null,
+          },
+        ]}
+        actions={
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <MagnifyingGlassIcon />
+              Select Vendor
+            </Button>
+            {selectedVendor && (
+              <Button variant="outline" size="sm" onClick={handleRemoveVendor}>
+                <TrashIcon />
+                Remove Vendor
+              </Button>
             )}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </div>
+        }
+        isEmpty={!selectedVendor}
+        emptyState={
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <UserIcon />
+              </EmptyMedia>
+              <EmptyTitle>No Vendor Selected</EmptyTitle>
+              <EmptyDescription>
+                Please select a vendor to see their information
+              </EmptyDescription>
+            </EmptyHeader>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsSearchOpen(true)}
+            >
+              <MagnifyingGlassIcon />
+              Select Vendor
+            </Button>
+          </Empty>
+        }
+      />
 
       <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
         <DialogContent className="max-w-full lg:max-w-2xl">

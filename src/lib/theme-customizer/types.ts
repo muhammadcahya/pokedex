@@ -1,5 +1,7 @@
-// Brand color options (24 colors from styles.css)
+// Brand color options (colors from styles.css)
 export const BRAND_COLORS = [
+  'mbss',
+  'daidan',
   'shadcn',
   'black',
   'red',

@@ -1,14 +1,10 @@
 import { useState } from 'react'
 import { PackageIcon, PlusIcon } from '@phosphor-icons/react'
+import { AccountAssignmentList } from './account-assignment-list'
+import { ContentSection } from './content-section'
 import { ItemList } from './item-list'
 import { ItemModal } from './item-modal'
 import type { ItemInfo } from '@/lib/purchase-order/types'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -67,20 +63,119 @@ export function ItemsCard() {
 
   return (
     <>
-      <Accordion defaultValue={['items']}>
-        <AccordionItem
-          value="items"
-          className="bg-card rounded-lg border shadow-sm"
-        >
-          <AccordionTrigger className="bg-muted px-4">
-            Items
-          </AccordionTrigger>
-          <AccordionContent className="pb-0">
-            <div className="bg-muted flex gap-2 border-t p-3">
+      <ContentSection
+        tabs={[
+          {
+            id: 'items',
+            label: 'Items',
+            content: (
+              <>
+                {/* Mobile Actions */}
+                <div className="flex flex-col gap-2 border-b p-3 md:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="w-full"
+                  >
+                    <PlusIcon />
+                    Add Inventory Item
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="w-full"
+                  >
+                    <PlusIcon />
+                    Add Freetext Item
+                  </Button>
+                </div>
+                <ItemList
+                  items={items}
+                  onEdit={openEditModal}
+                  onDelete={openDeleteModal}
+                  subTotal={subTotal}
+                  finalDiscount={finalDiscount}
+                  vat={vat}
+                  grandTotal={grandTotal}
+                />
+              </>
+            ),
+          },
+          {
+            id: 'account-assignment',
+            label: 'Account Assignment',
+            content: (
+              <>
+                {/* Mobile Actions */}
+                <div className="flex flex-col gap-2 border-b p-3 md:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="w-full"
+                  >
+                    <PlusIcon />
+                    Add Inventory Item
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="w-full"
+                  >
+                    <PlusIcon />
+                    Add Freetext Item
+                  </Button>
+                </div>
+                <AccountAssignmentList
+                  items={items}
+                  onEdit={openEditModal}
+                  onDelete={openDeleteModal}
+                />
+              </>
+            ),
+          },
+        ]}
+        actions={
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              <PlusIcon />
+              Add Inventory Item
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              <PlusIcon />
+              Add Freetext Item
+            </Button>
+          </div>
+        }
+        isEmpty={items.length === 0}
+        emptyState={
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <PackageIcon />
+              </EmptyMedia>
+              <EmptyTitle>No Items Added</EmptyTitle>
+              <EmptyDescription>
+                Click Add Inventory Item or Add Freetext Item to add new items.
+              </EmptyDescription>
+            </EmptyHeader>
+            <div className="flex flex-col gap-2 md:hidden">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAddModalOpen(true)}
+                className="w-full"
               >
                 <PlusIcon />
                 Add Inventory Item
@@ -89,38 +184,15 @@ export function ItemsCard() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsAddModalOpen(true)}
+                className="w-full"
               >
                 <PlusIcon />
                 Add Freetext Item
               </Button>
             </div>
-            {items.length === 0 ? (
-              <Empty className="border-t py-8">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <PackageIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No Items Added</EmptyTitle>
-                  <EmptyDescription>
-                    Click on Add Inventory Item or Add Freetext Item to add new
-                    items.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            ) : (
-              <ItemList
-                items={items}
-                onEdit={openEditModal}
-                onDelete={openDeleteModal}
-                subTotal={subTotal}
-                finalDiscount={finalDiscount}
-                vat={vat}
-                grandTotal={grandTotal}
-              />
-            )}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </Empty>
+        }
+      />
 
       <ItemModal
         isOpen={isAddModalOpen}

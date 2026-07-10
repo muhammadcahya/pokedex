@@ -1,12 +1,7 @@
 import { useRef, useState } from 'react'
 import { PaperclipIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
+import { ContentSection } from './content-section'
 import type { AttachmentInfo } from '@/lib/purchase-order/types'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -61,61 +56,82 @@ export function AttachmentCard() {
 
   return (
     <>
-      <Accordion defaultValue={['attachment']}>
-        <AccordionItem
-          value="attachment"
-          className="bg-card rounded-lg border shadow-sm"
-        >
-          <AccordionTrigger className="bg-muted px-4">
-            Attachment
-          </AccordionTrigger>
-          <AccordionContent className="pb-0">
-            <div className="bg-muted flex gap-2 border-t p-3">
-              <Button variant="outline" size="sm" onClick={openFileModal}>
-                <PlusIcon />
-                Add Attachment
-              </Button>
-            </div>
-            {attachments.length === 0 ? (
-              <Empty className="border-t py-8">
-                <EmptyHeader>
-                  <EmptyMedia variant="icon">
-                    <PaperclipIcon />
-                  </EmptyMedia>
-                  <EmptyTitle>No Attachments</EmptyTitle>
-                  <EmptyDescription>
-                    Click Add Attachment to upload files.
-                  </EmptyDescription>
-                </EmptyHeader>
-              </Empty>
-            ) : (
-              <ul className="space-y-2 border-t px-4 py-3">
-                {attachments.map((attachment) => (
-                  <li
-                    key={attachment.id}
-                    className="border-border flex items-center justify-between rounded-md border p-2"
+      <ContentSection
+        tabs={[
+          {
+            id: 'attachments',
+            label: 'Attachments',
+            content: (
+              <>
+                {/* Mobile Actions */}
+                <div className="flex border-b p-3 md:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={openFileModal}
+                    className="w-full"
                   >
-                    <div className="flex items-center">
-                      <PaperclipIcon className="text-muted-foreground mr-2 h-4 w-4" />
-                      <span className="text-sm">{attachment.name}</span>
-                      <span className="text-muted-foreground ml-2 text-xs">
-                        ({attachment.size}) - {attachment.type}
-                      </span>
-                    </div>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => removeAttachment(attachment.id)}
+                    <PlusIcon />
+                    Add Attachment
+                  </Button>
+                </div>
+                <ul className="space-y-2 px-4 py-3">
+                  {attachments.map((attachment) => (
+                    <li
+                      key={attachment.id}
+                      className="border-border flex items-center justify-between rounded-md border p-2"
                     >
-                      <TrashIcon />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+                      <div className="flex items-center">
+                        <PaperclipIcon className="text-muted-foreground mr-2 h-4 w-4" />
+                        <span className="text-sm">{attachment.name}</span>
+                        <span className="text-muted-foreground ml-2 text-xs">
+                          ({attachment.size}) - {attachment.type}
+                        </span>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        onClick={() => removeAttachment(attachment.id)}
+                      >
+                        <TrashIcon />
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ),
+          },
+        ]}
+        actions={
+          <Button variant="outline" size="sm" onClick={openFileModal}>
+            <PlusIcon />
+            Add Attachment
+          </Button>
+        }
+        isEmpty={attachments.length === 0}
+        emptyState={
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <PaperclipIcon />
+              </EmptyMedia>
+              <EmptyTitle>No Attachments</EmptyTitle>
+              <EmptyDescription>
+                Click Add Attachment to upload files.
+              </EmptyDescription>
+            </EmptyHeader>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={openFileModal}
+              className="md:hidden"
+            >
+              <PlusIcon />
+              Add Attachment
+            </Button>
+          </Empty>
+        }
+      />
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>

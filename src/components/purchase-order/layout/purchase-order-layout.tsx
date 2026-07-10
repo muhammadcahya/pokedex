@@ -9,12 +9,12 @@ interface PurchaseOrderLayoutProps {
 
 export function PurchaseOrderLayout({ children }: PurchaseOrderLayoutProps) {
   return (
-    <div className="[--header-height:theme(spacing.14)]">
+    <div className="[--header-height:--spacing(14)]">
       <SidebarProvider className="flex flex-col">
         <SiteHeader />
         <div className="flex flex-1">
           <AppSidebar />
-          <SidebarInset>
+          <SidebarInset className="overflow-x-hidden">
             <div className="flex flex-1 flex-col">{children}</div>
           </SidebarInset>
         </div>

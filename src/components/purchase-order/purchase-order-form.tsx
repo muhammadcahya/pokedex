@@ -67,7 +67,7 @@ export function PurchaseOrderForm({
       </Breadcrumb>
       <div
         className={cn(
-          'space-y-4',
+          'flex flex-col gap-6',
           fixedScroll && 'max-h-[calc(100vh-200px)] overflow-y-auto',
         )}
       >

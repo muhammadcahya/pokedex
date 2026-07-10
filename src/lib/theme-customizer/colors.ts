@@ -12,6 +12,16 @@ interface ColorMetadata {
 
 export const BRAND_COLOR_METADATA: Array<ColorMetadata> = [
   {
+    name: 'daidan',
+    label: 'daidan',
+    preview: { light: 'bg-blue-900', dark: 'bg-neutral-100' },
+  },
+  {
+    name: 'mbss',
+    label: 'mbss',
+    preview: { light: 'bg-blue-900', dark: 'bg-white' },
+  },
+  {
     name: 'shadcn',
     label: 'shadcn',
     preview: { light: 'bg-neutral-900', dark: 'bg-neutral-100' },

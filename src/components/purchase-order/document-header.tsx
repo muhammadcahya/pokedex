@@ -1,6 +1,7 @@
-import { CalendarBlankIcon } from '@phosphor-icons/react'
+import { CalendarBlankIcon, PencilIcon } from '@phosphor-icons/react'
 import { format } from 'date-fns'
 import { ApprovalList } from './approval-list'
+import { ContentSection } from './content-section'
 import type { HeaderData } from '@/lib/purchase-order/types'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -9,12 +10,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -62,150 +57,172 @@ export function DocumentHeader({
 
   return (
     <>
-      <Accordion defaultValue={['header']}>
-        <AccordionItem
-          value="header"
-          className="bg-card rounded-lg border shadow-sm"
-        >
-          <AccordionTrigger className="bg-muted px-4">
-            Document Header
-          </AccordionTrigger>
-          <AccordionContent className="overflow-x-auto pb-0">
-            <div className="border-t px-4 py-3">
-              <ApprovalList />
-            </div>
-            <div className="overflow-hidden rounded-b-lg">
-              <Table className="w-full">
-                <TableBody className="whitespace-nowrap">
-                  <TableRow className="bg-background hover:bg-background">
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Company
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle font-mono text-xs">
-                      {headerData.company}
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Currency
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.currency}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Delivery To
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.deliveryTo}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border border-t"></TableCell>
-                  </TableRow>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Doc Number
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle font-mono text-xs italic">
-                      {headerData.docNumber}
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Rate
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle font-mono text-xs">
-                      {headerData.rate}
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Vendor Sales Order
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.vendorSalesOrder}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border border-t"></TableCell>
-                  </TableRow>
-                  <TableRow className="bg-background hover:bg-background">
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      PO Date
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.poDate}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Priority
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.priority}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Expense Type
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle">
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.expenseType}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border border-t"></TableCell>
-                  </TableRow>
-                  <TableRow className="bg-muted/50 hover:bg-muted/50">
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Terms (Days)
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.terms}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Expense Group
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle">
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.expenseGroup}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
-                      Submitted By
-                    </TableCell>
-                    <TableCell
-                      className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
-                      onClick={() => setIsModalOpen(true)}
-                    >
-                      <span className="text-primary cursor-pointer font-mono text-xs">
-                        {headerData.submittedBy}
-                      </span>
-                    </TableCell>
-                    <TableCell className="border-border border-t"></TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+      <ContentSection
+        tabs={[
+          {
+            id: 'header',
+            label: 'Document Header',
+            content: (
+              <>
+                {/* Mobile Actions */}
+                <div className="flex border-b p-3 md:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsModalOpen(true)}
+                    className="w-full"
+                  >
+                    <PencilIcon />
+                    Edit Header
+                  </Button>
+                </div>
+                <div className="border-b px-4 py-3">
+                  <ApprovalList />
+                </div>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableBody className="whitespace-nowrap">
+                      <TableRow className="bg-background hover:bg-background">
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Company
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle font-mono text-xs">
+                          {headerData.company}
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Currency
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.currency}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Delivery To
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.deliveryTo}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50">
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Doc Number
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle font-mono text-xs italic">
+                          {headerData.docNumber}
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Rate
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle font-mono text-xs">
+                          {headerData.rate}
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Vendor Sales Order
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.vendorSalesOrder}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="bg-background hover:bg-background">
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          PO Date
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.poDate}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Priority
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.priority}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Expense Type
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle">
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.expenseType}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border border-t"></TableCell>
+                      </TableRow>
+                      <TableRow className="bg-muted/50 hover:bg-muted/50">
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Terms (Days)
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.terms}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Expense Group
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle">
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.expenseGroup}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle text-[10px] font-bold uppercase">
+                          Submitted By
+                        </TableCell>
+                        <TableCell
+                          className="border-border w-1 border-t border-r p-1.5 pr-3 align-middle"
+                          onClick={() => setIsModalOpen(true)}
+                        >
+                          <span className="text-primary cursor-pointer font-mono text-xs">
+                            {headerData.submittedBy}
+                          </span>
+                        </TableCell>
+                        <TableCell className="border-border border-t"></TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
+              </>
+            ),
+          },
+        ]}
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <PencilIcon />
+            Edit Header
+          </Button>
+        }
+      />
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-full lg:max-w-2xl">

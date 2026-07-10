@@ -43,6 +43,10 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         href: appCss,
       },
       {
+        rel: 'stylesheet',
+        href: 'https://rsms.me/inter/inter.css',
+      },
+      {
         rel: 'icon',
         href: '/pokeball-logo.svg',
         type: 'image/svg+xml',
